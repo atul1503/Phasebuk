@@ -1,0 +1,28 @@
+Data model:
+
+Credentials:
+   username
+   password
+
+User:
+  username = > pk
+  name
+  age
+  status
+  location
+
+Posts:
+  postID = > pk
+  text
+  mediaID
+  parentPostID
+  
+Media:
+  mediaID
+  url
+
+Friendships:
+   friend1ID => fk for Users(username)
+   friend2ID  => fk for Users(username)
+
+

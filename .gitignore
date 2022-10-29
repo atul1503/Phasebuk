@@ -8,8 +8,12 @@
 # testing
 /coverage
 
+/src/Server/Credentials.js
+
 # production
 /build
+
+/src/Server/node_modules
 
 # misc
 .DS_Store
