@@ -1,1 +1,11 @@
 to add some dependancy to a empty folder go to that folder and run "npm init -y" and then run "npm install whateverpackage" to install those packages as dependencies in that npm package/folder. 
+
+require() is same as import().Whatever is importable by import ius importable by require also.Only difference between them is require() executes the module before importing its "exports" object.
+whennever we require(module) then we get the exports object of the module in our current scope.
+
+
+In firebase,
+
+collections contains documents
+documents contain data and subcollections.
+documents can be reffered by using a reference of its parent collection.
