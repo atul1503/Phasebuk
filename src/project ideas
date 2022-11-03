@@ -16,6 +16,8 @@ Posts:
   text
   mediaID
   parentPostID
+  username
+  timestamp
   
 Media:
   mediaID
@@ -24,5 +26,35 @@ Media:
 Friendships:
    friend1ID => fk for Users(username)
    friend2ID  => fk for Users(username)
+
+PendingRequest:
+  AcceptorID : user id of accepter
+  SenderID: user id of initiater
+
+Postmentions:
+  postID
+  mentionID: a user id
+
+
+* user id and username is same.
+
+Notifications:
+   type: {birthday,post,reply}
+   postID
+   timestamp
+   userid
+   seen : true or false
+   
+
+
+All these tables will be collections.
+
+
+UI pages::
+First page will be home where posts of all the friends of user will be displayed sorted by time.
+Notifications page.
+write post page.
+find friends page.
+friend requests page.
 
 

@@ -1,55 +1,36 @@
 const express = require('express');
-
-const app = express();
-
 const credndb=require('./Credentials');
 const firebase_firestore=require("firebase/firestore");
+const getters=require("./getters");
 
-const { collection, query, where, getDocs,getDoc,doc } =firebase_firestore;
-//import { collection, query, where, getDocs } from "firebase/firestore";
+const app = express();
+const { collection, query, where, getDocs } =firebase_firestore;
 const db=credndb.db;
 
-const cors= require('cors');
-const { setDoc } = require('firebase/firestore');
 
+const cors= require('cors');
+const { getDefaultEmulatorHostnameAndPort } = require('@firebase/util');
 app.use(cors());
 
+
+//paths
 app.get('/users',function(req,res) { return getUserData(req,res); } );
-
 app.get('/posts',function(req,res) { return getPostsData(req,res); } );
+app.get('/home',function(req,res) { return getHome(req,res)} )
 
 
- async function getUserData(req,res){
-
-    var username=req.query.username;
-    //console.log(username);
-    var usercoll=collection(db,"User");
-    var q= query(usercoll,where("username","==",username));
-    var qSnapshot=await getDocs(q);
-   console.log(qSnapshot);
-    var userobj=qSnapshot.docs[0].data();
-    console.log(qSnapshot.docs[0].id);
-    return userobj;
-
+//callback handlers
+async function getUserData(req,res){
+    return getters.getUserDataFromDB(db,req.query.username);
 }
 
-async function pip() {
-var a=await setDoc(doc(db,"User","Tuliinki"),
-{
-    username: "Tikku",
-    age : 27
-}
-);
+async function getPostsData(req,res) {
+    return getters.getPostsDataFromDB(db,req.query.postID);
 }
 
-pip();
-
-
-function getPostsData(req,res) {
+async function getHome(){
+    //provide username as req.query
+    
 
 
 }
-
-
-
-module.exports=getUserData;
