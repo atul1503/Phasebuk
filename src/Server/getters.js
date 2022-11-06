@@ -1,6 +1,5 @@
-const { orderBy } = require("firebase/firestore");
-const firebase_firestore=require("firebase/firestore");
-const { collection, query, where, getDocs } =firebase_firestore;
+const firestore=require("firebase/firestore");
+const { collection, query, where, getDocs,orderBy } =firestore;
 
 
 async function getUserDataFromDB(db,id){
@@ -72,10 +71,33 @@ async function getNotificationsFromDB(db,id){
     return notifs;
 }
 
+async function getFriends(id){
+    var friendscoll=collection(db,"RecommendedFriends");
+    var q=query(friendscoll,where("userid","==",id));
+    var qSnapshot=await getDocs(q);
+    var recfriends=[];
+    qSnapshot.forEach(function(doc){
+        recfriends.push(doc.data());
+    });
+    }
+    
+
+async function getFriendRequestsFromDB(id){
+    var q=query(collection("PendingRequest"),where("AcceptorID","==",id));
+    var qSnapshot=await getDocs(q);
+    var FRs=[];
+    qSnapshot.forEach(function(doc){
+        FRs.push(doc.data());
+    });
+}
+
 
 module.exports={
     getUserDataFromDB,
     getPostsDataFromDB,
     getHomeFromDB,
     verifyCredentialsFromDB,
+    getNotificationsFromDB,
+    getFriends,
+    getFriendRequestsFromDB
 };

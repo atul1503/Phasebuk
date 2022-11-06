@@ -8,20 +8,18 @@ User:
   username = > pk
   name
   age
+  photo
   status
   location
 
 Posts:
   postID = > pk
   text
-  mediaID
+  mediaUrl
   parentPostID
   username
   timestamp
   
-Media:
-  mediaID
-  url
 
 Friendships:
    friend1ID => fk for Users(username)
@@ -44,6 +42,17 @@ Notifications:
    timestamp
    userid
    seen : true or false
+
+
+RecommendedFriends:
+  userid
+  friendid
+
+MaxIdTable:
+  postidmax={ postidmax: } max value of postid in database
+
+
+
    
 
 
@@ -56,5 +65,6 @@ Notifications page.
 write post page.
 find friends page.
 friend requests page.
+Create User page.
 
 
