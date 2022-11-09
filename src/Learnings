@@ -9,3 +9,9 @@ In firebase,
 collections contains documents
 documents contain data and subcollections.
 documents can be reffered by using a reference of its parent collection.
+
+
+Using react router for navigation.
+
+
+If you are getting a pending promise then use await keyword.Also make sure that wherever you are using await should be inside an async function.

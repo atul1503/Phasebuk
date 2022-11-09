@@ -1,0 +1,12 @@
+if first render then go ahead
+if not first render and wantMorePosts then go ahead
+else dont go ahead
+
+
+if first render then turn off first render while doing state change
+if wantMorePosts then same as above
+
+wantMorePosts will be turned on only by "See more" handler button; but can be turned off by getHome();
+
+-----
+

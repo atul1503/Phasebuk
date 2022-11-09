@@ -18,6 +18,7 @@ Posts:
   mediaUrl
   parentPostID
   username
+  likes
   timestamp
   
 
@@ -66,5 +67,8 @@ write post page.
 find friends page.
 friend requests page.
 Create User page.
+
+
+App component will have login and signup.
 
 
