@@ -11,10 +11,12 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App/>}>
-          <Route path="home" element={<Home/>} />
+           <Route path="home" element={<App/>} />
+           {/*
           <Route path="findfriends" element={<FFriends/>} />
           <Route path="notifications" element={<Notification/>} />
           <Route path="login" element={<Login/>}/>
+        */}
         </Route> 
       </Routes>
     </BrowserRouter>

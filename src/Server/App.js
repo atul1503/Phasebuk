@@ -30,7 +30,7 @@ async function getPostsData(req,res) {
     return await getters.getPostsDataFromDB(db,req.query.postID);
 }
 
-async function getHome(){
+async function getHome(req,res){
     //provide username as req.query
     return await getHomeFromDB(db,req.query.username,req.query.lastpostid);
     

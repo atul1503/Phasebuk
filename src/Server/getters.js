@@ -1,5 +1,5 @@
 const firestore=require("firebase/firestore");
-const { collection, query, where, getDocs,orderBy } =firestore;
+const { collection, query, where, getDocs,orderBy,limit } =firestore;
 
 
 async function getUserDataFromDB(db,id){
@@ -27,20 +27,21 @@ async function getHomeFromDB(db,id,lastpostid){
     qSnapshot.forEach(function(doc){
         friendsid.push(doc.data().friend2ID);
     });
+    //console.log(friendsid);
     var posts=[];
     var postcoll=collection(db,"Posts");
-    friendsid.forEach(async function(id){
         if(lastpostid){
-        var q2=query(postcoll,where("username","==",id),where("postID",">=",lastpostid),orderBy("timestamp","desc").limit(10));
+        var q2=query(postcoll,where("username","in",friendsid),where("postID",">=",lastpostid),orderBy("postID","desc"),limit(10));
         }
         else{
-            var q2=query(postcoll,where("username","==",id),orderBy("timestamp","desc").limit(10));
+            var q2=query(postcoll,where("username","in",friendsid),orderBy("timestamp","desc"),limit(10));
+            //orderBy("timestamp","desc"),limit(10)
         }
         var qSnapshot=await getDocs(q2);
+        //console.log(qSnapshot.docs);
         qSnapshot.forEach(function(doc){
             posts.push(doc.data());
         })
-    });
     return posts;
 }
 

@@ -1,18 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Post } from './Components/Post';
-import { isButtonElement } from 'react-router-dom/dist/dom';
 
-async function App() {
-  const [posts,setPosts]=useState({postArr:[],lastpostid: null,isFirstRender: true,wantMorePosts: false});
-  const params=useParams();
+
+ function App(props) {
+  const [posts,setPosts] = useState({postArr: [],lastpostid: null,isFirstRender: true,wantMorePosts: false});
+  const location=useLocation();
+  const params=new URLSearchParams(location.search);
   const nav=useNavigate();
-  if(!params.username) {
-    nav("/login");
-    return;
-  } 
+  
+  useEffect(function(){
+    if(!params.get('username')) {
+      nav("/login");
+      return;
+    }
+  },[]) 
+
+  useEffect(function() { getHome(); })
   
   async function getHome(){
     var firstrender=null,wantMorePosts=null;
@@ -21,14 +27,16 @@ async function App() {
     else return;
 
 
-    if(posts.lastpostid) {var responseobj=await fetch("http://localhost:8000/home?username="+params.username+"&lastpostid="+posts.lastpostid) }
-    else { var responseobj=await fetch("http://localhost:8000/home?username="+params.username) }
+    if(posts.lastpostid) {var responseobj=await fetch("http://localhost:8000/home?username="+params.get('username')+"&lastpostid="+posts.lastpostid) }
+    else { var responseobj=await fetch("http://localhost:8000/home?username="+params.get('username')) }
     var homeposts=await responseobj.json();
     var newstate=JSON.parse(JSON.stringify(posts));
     if(firstrender) newstate.isFirstRender=false;
     if(wantMorePosts) newstate.wantMorePosts=false;
     newstate.postArr=homeposts;
+    if(homeposts.length>0)
     newstate.lastpostid=homeposts[homeposts.length-1].postID;
+    //console.log(newstate);
     setPosts(newstate);
 
   }
@@ -36,9 +44,10 @@ async function App() {
   function getMore(e){
     var newstate=JSON.parse(JSON.stringify(posts));
     newstate.wantMorePosts=true;
+    newstate.lastpostid=posts.postArr[posts.postArr.length-1].postID+1;
+    console.log(newstate);
     setPosts(newstate);
   }
-
 
    return (
     <div>
@@ -47,7 +56,7 @@ async function App() {
         function(postobj) 
         {  
           return(
-           <div>
+           <div key={postobj.timestamp} >
            <Post obj={postobj}/>
            </div>
           )
