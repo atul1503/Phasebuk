@@ -1,6 +1,6 @@
-import logo from './logo.svg';
+
 import './App.css';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Post } from './Components/Post';
 
@@ -51,6 +51,7 @@ import { Post } from './Components/Post';
 
    return (
     <div>
+      
       {
       posts.postArr.map(
         function(postobj) 
