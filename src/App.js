@@ -45,7 +45,7 @@ import { Post } from './Components/Post';
     var newstate=JSON.parse(JSON.stringify(posts));
     newstate.wantMorePosts=true;
     newstate.lastpostid=posts.postArr[posts.postArr.length-1].postID+1;
-    console.log(newstate);
+    //console.log(newstate);
     setPosts(newstate);
   }
 

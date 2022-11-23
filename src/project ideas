@@ -19,6 +19,7 @@ Posts:
   parentPostID
   username
   likes
+  nocp // number of child posts;to be treated as comments.
   timestamp
   
 
