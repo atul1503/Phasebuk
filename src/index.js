@@ -8,7 +8,8 @@ import Error from './Components/Error';
 import FFriends from './Components/FFriends';
 import Layout from './Components/Layout';
 import Login from './Components/Login';
-import Notification from './Components/Notification'
+import Notification from './Components/Notification';
+
 
 
 
