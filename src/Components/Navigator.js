@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
 
 function Navigator() {
@@ -8,7 +9,8 @@ function Navigator() {
     <Link to="/notifications">Notifications</Link>
     <Link to="/findfriends">Find Friends</Link>
     </div>
-    )
+    );
+    
 }
 
 export default Navigator;
