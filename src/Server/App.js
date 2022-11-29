@@ -12,9 +12,11 @@ const db=credndb.db;
 const PORT=8000;
 const cors= require('cors');
 app.use(cors());
+app.use(express.json());
 
 
 //paths
+app.post('/login',async function(req,res){ res.send(await verifyUser(req,res) ) });
 app.get('/users',async function(req,res) {  res.send(await getUserData(req,res)) } );
 app.get('/posts',async function(req,res) {  res.send(await getPostsData(req,res)) } );
 app.get('/home',async function(req,res) {  res.send(await getHome(req,res)) } );
@@ -33,9 +35,12 @@ async function getPostsData(req,res) {
 async function getHome(req,res){
     //provide username as req.query
     return await getHomeFromDB(db,req.query.username,req.query.lastpostid);
-    
+}  
 
-
+async function verifyUser(req,res){
+    var boole = await getters.verifyCredentialsFromDB(db,req.body.username,req.body.password);
+    return({isValid: boole,username: req.body.username});
 }
+
 
 app.listen(PORT,function() { console.log("App is running at port "+PORT) });

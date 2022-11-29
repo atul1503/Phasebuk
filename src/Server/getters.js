@@ -1,5 +1,5 @@
 const firestore=require("firebase/firestore");
-const { collection, query, where, getDocs,orderBy,limit } =firestore;
+const { collection, query, where, getDocs,orderBy,limit,doc,getDoc } =firestore;
 
 
 async function getUserDataFromDB(db,id){
