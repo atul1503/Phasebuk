@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 function Login(){
     const [cred,setCred]=useState({username:'',password:'',triedLogin: false});
@@ -33,8 +33,11 @@ function Login(){
             <UsernameInput name="username" cred={cred} setCred={setCred}/>
             <label for="password"> Password </label>
             <PasswordInput name="username" cred={cred} setCred={setCred}/>
-            <button onClick={signin}>Sign in</button>
             {cred.triedLogin?<div>Incorrect username or password</div>:<div></div>}
+            <button onClick={signin}>Sign in</button>
+            Or
+            <Link to="/signup">Sign up</Link>
+
         </div>
     )
 }

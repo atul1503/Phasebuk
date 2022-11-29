@@ -8,6 +8,7 @@ import Error from './Components/Error';
 import FFriends from './Components/FFriends';
 import Layout from './Components/Layout';
 import Login from './Components/Login';
+import Signup from './Components/Signup';
 import Notification from './Components/Notification';
 
 
@@ -24,6 +25,7 @@ root.render(
           <Route path="findfriends" element={<FFriends/>} />
           <Route path="notifications" element={<Notification/>} />
           <Route path="login" element={<Login/>}/>
+          <Route path="Signup" element={<Signup/>}/>
           <Route path="*" element={<Error/>}/>
         </Route> 
       </Routes>
