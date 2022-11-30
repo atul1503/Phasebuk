@@ -15,7 +15,13 @@ async function getPostsDataFromDB(db,id){
     var q=query(postcoll,where("postID","==",id));
     var qSnapshot=await getDocs(q);
     var postObj=qSnapshot.docs[0].data();
-    return postObj;
+    q=query(collection(db,"Post"),where("parentPostID","==",id));
+    qSnapshot=await getDocs(q);
+    var childpostobjArr=[];
+    qSnapshot.forEach(function(doc){
+        childpostobjArr.push(doc.data());
+    });
+    return {parentpost:postObj,childposts:childpostobjArr};
 }
 
 

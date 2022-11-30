@@ -23,7 +23,7 @@ app.post('/login',async function(req,res){ res.send(await verifyUser(req,res) ) 
 app.post('/likes',async (req,res) => { res.send(await getLikedUsers(db,req.postID)) });
 app.post('/signup',async function(req,res) { res.send( await createUserProfile(db,req) )})
 app.get('/users',async function(req,res) {  res.send(await getUserData(req,res)) } );
-app.get('/posts',async function(req,res) {  res.send(await getPostsData(req,res)) } );
+app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
 app.get('/home',async function(req,res) {  res.send(await getHome(req,res)) } );
 
 

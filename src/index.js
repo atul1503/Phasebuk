@@ -9,6 +9,8 @@ import FFriends from './Components/FFriends';
 import Layout from './Components/Layout';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
+import Likes from './Components/Likes';
+import Comments from './Components/Comments';
 import Notification from './Components/Notification';
 
 
@@ -27,6 +29,7 @@ root.render(
           <Route path="login" element={<Login/>}/>
           <Route path="Signup" element={<Signup/>}/>
           <Route path="likes" element={<Likes/>}/>
+          <Route path="post" element={<Comments/>}/>
           <Route path="*" element={<Error/>}/>
         </Route> 
       </Routes>

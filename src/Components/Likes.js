@@ -9,14 +9,13 @@ function Likes(){
         fetch("http://localhost:8000/likes?postID="+localStorage.getItem("postID"))
         .then(data=>data.json())
         .then(arr=>{
-            localStorage.removeItem("postID");
             setLikesArr(arr);
         })
     })
 
     return(
         <div>
-            <button onClick={e=>{nav(-1)}}>←---Back to Post</button>
+            <button onClick={e=>{ localStorage.removeItem("postID"); nav(-1)}}>←---Back to Post</button>
             <ul>
                 {likesArr.map(function(item){
                     return(
@@ -27,3 +26,6 @@ function Likes(){
         </div>
     )
 }
+
+
+export default Likes;
