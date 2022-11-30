@@ -54,7 +54,7 @@ import { Post } from './Components/Post';
         function(postobj) 
         {  
           return(
-           <div key={postobj.timestamp} >
+           <div key={postobj.postID} >
            <Post obj={postobj}/>
            </div>
           )

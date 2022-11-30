@@ -57,7 +57,7 @@ function Signup(){
     <label for="Location">Location</label>
     <input type="text" name="Location" onChange={e=>{setForm({...form,location: e.target.value})}}></input>
 
-    <button onClick={createProfile}></button>
+    <button onClick={createProfile}>Join us</button>
 </div>
  )  
 }

@@ -84,12 +84,32 @@ async function getFriends(id){
     
 
 async function getFriendRequestsFromDB(id){
-    var q=query(collection("PendingRequest"),where("AcceptorID","==",id));
+    var q=query(collection(db,"PendingRequest"),where("AcceptorID","==",id));
     var qSnapshot=await getDocs(q);
     var FRs=[];
     qSnapshot.forEach(function(doc){
         FRs.push(doc.data());
     });
+}
+
+
+async function getLikedUsers(db,postID){
+    var q=query(collection(db,"LikedBy"),where("postID","==",postID));
+    var qSnapshot=await getDocs(q);
+    var likers=[];
+    qSnapshot.forEach(function(doc){
+        likers.push(doc.data().username);
+    })
+    
+    //
+
+    q=query(collection(db,"User"),where("username","in",likers));
+    qSnapshot=await getDocs(q);
+    likers=[];
+    qSnapshot.forEach(function(doc){
+        likers.push(doc.data().name);
+    })
+    return likers;
 }
 
 

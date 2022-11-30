@@ -26,6 +26,7 @@ root.render(
           <Route path="notifications" element={<Notification/>} />
           <Route path="login" element={<Login/>}/>
           <Route path="Signup" element={<Signup/>}/>
+          <Route path="likes" element={<Likes/>}/>
           <Route path="*" element={<Error/>}/>
         </Route> 
       </Routes>

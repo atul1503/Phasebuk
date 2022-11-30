@@ -14,7 +14,7 @@ function Post(props) {
     {props.obj.imageUrl.map(function(url) {
         <img src={url} alt="Abdra ka dabdra"/>
     })}
-    <Footer/>
+    {Footer}
     </div>
 </div>
     );
@@ -28,6 +28,20 @@ function Post(props) {
             </div>
         );
     }
+}
+
+function Footer(props){
+    return(
+        <div>
+            <div>{props.obj.likes>0?props.obj.likes:0} 
+            <Link to="/likes" onClick={e=>{localStorage.setItem("postID",props.obj.postID)}}>likes</Link>
+            </div>
+            <div>
+                <Link to="/post" onClick={e=>{localStorage.setItem("postobj",props.obj)}}>Comments</Link>
+            </div>
+        </div>
+    );
+
 }
 
 
