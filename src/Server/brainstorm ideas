@@ -8,5 +8,9 @@ if wantMorePosts then same as above
 
 wantMorePosts will be turned on only by "See more" handler button; but can be turned off by getHome();
 
------
+---------
+Comments will have its own endpoint called /post.
+localStorage will store the postobj.
+Comments will be the component name; comments to a post will rendered as Post component.
+Each Comments component will also have a back button for navigating to parent post.
 

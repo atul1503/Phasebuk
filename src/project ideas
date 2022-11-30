@@ -21,6 +21,10 @@ Posts:
   likes
   nocp // number of child posts;to be treated as comments.
   timestamp
+
+LikedBy:
+  username
+  postID : post that was liked
   
 
 Friendships:
