@@ -11,7 +11,7 @@ async function getUserDataFromDB(db,id){
 }
 
 async function getPostsDataFromDB(db,id){
-    var postcoll=collection(db,"Post");
+    var postcoll=collection(db,"Posts");
     var q=query(postcoll,where("postID","==",id));
     var qSnapshot=await getDocs(q);
     var postObj=qSnapshot.docs[0].data();
