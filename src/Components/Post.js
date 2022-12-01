@@ -37,7 +37,8 @@ function Footer(props){
             <Link to="/likes" onClick={e=>{localStorage.setItem("postID",props.obj.postID)}}>likes</Link>
             </div>
             <div>
-                <Link to="/post" onClick={e=>{localStorage.setItem("postobj",props.obj)}}>Comments</Link>
+                {props.obj.nocp>0?props.obj.nocp:0}
+                <Link to="/post" onClick={e=>{localStorage.setItem("postobj",JSON.stringify(props.obj))}}> comments</Link>
             </div>
         </div>
     );
