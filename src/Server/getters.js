@@ -15,7 +15,7 @@ async function getPostsDataFromDB(db,id){
     var q=query(postcoll,where("postID","==",id));
     var qSnapshot=await getDocs(q);
     var postObj=qSnapshot.docs[0].data();
-    q=query(collection(db,"Post"),where("parentPostID","==",id));
+    q=query(collection(db,"Posts"),where("parentPostID","==",id));
     qSnapshot=await getDocs(q);
     var childpostobjArr=[];
     qSnapshot.forEach(function(doc){
@@ -106,7 +106,6 @@ async function getLikedUsers(db,postID){
     qSnapshot.forEach(function(doc){
         likers.push(doc.data().username);
     })
-    
     //
 
     q=query(collection(db,"User"),where("username","in",likers));
@@ -126,5 +125,6 @@ module.exports={
     verifyCredentialsFromDB,
     getNotificationsFromDB,
     getFriends,
-    getFriendRequestsFromDB
+    getFriendRequestsFromDB,
+    getLikedUsers
 };
