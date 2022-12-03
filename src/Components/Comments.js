@@ -57,8 +57,18 @@ function createPost(e,text,obj){
       headers:{
         'Content-Type':'Application/json'
       },
-      body: JSON.stringify({text:text,nocp:0,timestamp:timestamp,postID:obj.postID})  
-    })
+      body: JSON.stringify({
+        text:text,
+        nocp:0,
+        likes:0,
+        timestamp:timestamp,
+        username:localStorage.getItem("username"),
+        parentPostID:obj.postID.toString()
+    })  
+    }
+    //backend has to provide correct postid to this obj and store the entire obj in db
+    )
+    .then(str=>{if(str==="success") console.log(str);})
 }
 
 export default Comments;
