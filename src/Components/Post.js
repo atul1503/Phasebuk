@@ -22,8 +22,9 @@ function Post(props) {
     else {
         return (
             <div>
+                <h4>{props.obj.username}</h4>
                 <p>{props.obj.text}</p>
-                <img src={props.obj.imageUrl} alt="Abra ka dabra" />
+                {props.obj.imageUrl?<img src={props.obj.imageUrl} alt="Abra ka dabra" />:""}
                 <Footer obj={props.obj}/>
             </div>
         );
@@ -34,16 +35,28 @@ function Footer(props){
     return(
         <div>
             <div>{props.obj.likes>0?props.obj.likes:0} 
-            <Link to="/likes" onClick={e=>{localStorage.setItem("postID",props.obj.postID)}}>likes</Link>
+            {props.obj.likes>0?<Link to={"/likes?username="+props.obj.username+"&postid="+props.obj.postID} > likes</Link>:" likes"}
             </div>
             <div>
                 {props.obj.nocp>0?props.obj.nocp:0}
-                <Link to="/post" onClick={e=>{localStorage.setItem("postobj",JSON.stringify(props.obj))}}> comments</Link>
+                <Link to={"/post?username="+props.obj.username+"&postid="+props.obj.postID} onClick={e=>{pushPostToStack(e,props.obj)}}> comments</Link>
             </div>
         </div>
     );
 
 }
 
+function pushPostToStack(e,obj){
+    if(localStorage.getItem("postobj")){
+        var arr=JSON.parse(localStorage.getItem("postobj"));
+        arr.push(obj);
+        localStorage.setItem("postobj",JSON.stringify(arr));
+    }
+    else{
+        localStorage.setItem("postobj",JSON.stringify([obj]));
+    }
+
+
+}
 
 export { Post };
