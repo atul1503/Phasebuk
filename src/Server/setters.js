@@ -13,8 +13,8 @@ async function setPostFromDB(db,postObj){
 }
 
 async function getMaxPostId(db){
-    var q=query(doc(db,"MaxIdTable","postidmax"));
-    var docSnap=await getDoc(q);
+    //console.log("hi");
+    var docSnap=await getDoc(doc(db,"MaxIdTable","postidmax"));
     return docSnap.data().postidmax;
 }
 
@@ -28,9 +28,10 @@ async function incrementMaxPostId(db){
 
 
 async function addPost(db,postobj){
-    var maxi=getMaxPostId();
-    postobj.postID=maxi+1;
-    await setDoc(doc(db,"Posts",postobj.postID),postobj);
+    //console.log("hi");
+    var maxi=await getMaxPostId(db);
+    postobj.postID=(maxi+1).toString();
+    await setDoc(doc(db,"Posts",postobj.postID.toString()),postobj);
     incrementMaxPostId(db);
 
 }
@@ -42,8 +43,7 @@ async function createUserProfile(db,req){
     delete obj.password;
     await setDoc(doc(db,"User",obj.username),obj);
     return {success: true};
-
-    
+   
 }
 
 
