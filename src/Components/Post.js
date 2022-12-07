@@ -1,40 +1,61 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Post(props) {
+    const [liked,setliked]=useState(false);
+    const [obj,setobj]=useState(props.obj);
+
+    function likePost(){
+        var postobj=obj;
+        if(liked){
+            return;
+        }
+        fetch("http://localhost:8000/likeit?username="+localStorage.getItem("username")+"&postID="+postobj.postID)
+        .then(res=>res.text())
+        .then(text=>{
+            if(text==="success"){
+                setliked(true);
+            }
+        })
+    }
+
 
 
 
     //other logic
-    if(Array.isArray(props.obj.imageUrl)) {
+    if(Array.isArray(obj.imageUrl)) {
     return (
-<div>
-    <p>{props.obj.text}</p>
+<div onClick={likePost}>
+    <p>{obj.text}</p>
     <div>
-    {props.obj.imageUrl.map(function(url) {
+    {obj.imageUrl.map(function(url) {
         return(
         <img src={url} alt="Abdra ka dabdra"/>
         );
     })}
-    <Footer obj={props.obj} changePID={props.changePID}/>
+    <Footer obj={obj} changePID={props.changePID}/>
     </div>
 </div>
     );
     }
     else {
         return (
-            <div>
-                <h4>{props.obj.username}</h4>
-                <p>{props.obj.text}</p>
-                {props.obj.imageUrl?<img src={props.obj.imageUrl} alt="Abra ka dabra" />:""}
-                <Footer obj={props.obj} changePID={props.changePID}/>
+            <div onClick={likePost}>
+                <h4>{obj.username}</h4>
+                <p>{obj.text}</p>
+                {obj.imageUrl?<img src={obj.imageUrl} alt="Abra ka dabra" />:""}
+                <Footer obj={obj} changePID={props.changePID} liked={liked}/>
             </div>
         );
     }
 }
 
 function Footer(props){
+
+
     return(
         <div>
+            {props.liked?"You 👍 this":""}
             <div>{props.obj.likes>0?props.obj.likes:0} 
             {props.obj.likes>0?<Link to={"/likes?username="+props.obj.username+"&postid="+props.obj.postID} > likes</Link>:" likes"}
             </div>

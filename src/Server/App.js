@@ -4,7 +4,7 @@ const firebase_firestore=require("firebase/firestore");
 const getters=require("./getters");
 const setters=require("./setters");
 const { getHomeFromDB,getPostsDataFromDB,getLikedUsers }=getters;
-const { createUserProfile,addPost }=setters;
+const { createUserProfile,addPost,likeit }=setters;
 const { collection, query, where, getDocs } =firebase_firestore;
 
 
@@ -25,6 +25,7 @@ app.post('/signup',async function(req,res) { res.send( await createUserProfile(d
 app.get('/users',async function(req,res) {  res.send(await getUserData(req,res)) } );
 app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
 app.get('/home',async function(req,res) {  res.send(await getHome(req,res)) } );
+app.get("/likeit",async function(req,res){ res.send(await likeit(db,req.query.username,req.query.postID) ) });
 app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
 
 
