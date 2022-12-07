@@ -62,7 +62,7 @@ import { Post } from './Components/Post';
         {  
           return(
            <div key={postobj.postID} >
-           <Post obj={postobj} onClick={e=>{localStorage.setItem("postobj",JSON.stringify(postobj))}} />
+           <Post obj={postobj} />
            </div>
           )
         }

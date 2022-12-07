@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Post } from "./Post";
 
 const { useEffect, useState } = require("react");
@@ -7,9 +7,7 @@ function Comments(){
     //remote localstorage key on back button click
     const [childposts,setChildPosts]=useState([]);
     const [reply,setReply]=useState("");
-    const [isLiked,setisLiked]=useState("");
     const nav=useNavigate();
-    const [params,setparams]=useSearchParams();
     const [postobj,setpostobj]=useState(JSON.parse(localStorage.getItem("postobj")));
 
     useEffect(function(){
@@ -18,7 +16,7 @@ function Comments(){
         .then(obj=>{
             setChildPosts(obj.childposts);
         });
-    },[postobj.postID]);
+    },[postobj.postID,postobj.nocp,postobj.likes]);
 
 
     function createPost(e,text,obj){
@@ -42,12 +40,7 @@ function Comments(){
         )
         .then(str=>str.text())
         .then(msg=>{if(msg==="success") {
-            var objArr=JSON.parse(localStorage.getItem("postobj"));
-            var obj=objArr.pop();
-            obj.nocp>0?obj.nocp=obj.nocp+1:obj.nocp=1;
-            objArr.push(obj);
-            localStorage.setItem("postobj",JSON.stringify(objArr));
-            window.location.reload()
+            setpostobj({...postobj,nocp:postobj.nocp+1})
         }});
     }
 

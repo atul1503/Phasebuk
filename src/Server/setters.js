@@ -54,10 +54,20 @@ async function createUserProfile(db,req){
 }
 
 
+async function likeit(db,username,postid){
+    await setDoc(doc(db,"LikedBy",username+postid),{username: username,postID: postid});
+    var postobj=(await getDoc(doc(db,"Posts",postid))).data();
+    postobj.likes++;
+    await setDoc(doc(db,"Posts",postid),postobj);
+    return "success";
+
+}
+
 module.exports={
     setPostFromDB,
     addPost,
-    createUserProfile
+    createUserProfile,
+    likeit
 
 }
 
