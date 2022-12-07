@@ -13,4 +13,15 @@ Comments will have its own endpoint called /post.
 localStorage will store the postobj.
 Comments will be the component name; comments to a post will rendered as Post component.
 Each Comments component will also have a back button for navigating to parent post.
+-----
+Comment page should pop the last postobj from localstorage.But after popping it should make it a state.
+this new state should have the like attribute which we can increment if user likes the post.when like is done the
+component wil re render.But we should not allow user to like more than once.So we create a state called interaction 
+which keeps check whether user liked the post or not.
+
+When the user presses the back button we should check if the current post object has a parent post id greater
+than 0.If it is true then pop the current post from stack and push the parent post in stack and navigate to 
+parent post (/post endpoint).if it has no parent post id just navigate to home page.
+
+
 

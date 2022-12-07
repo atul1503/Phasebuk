@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 
 function Post(props) {
 
-    
+
+
     //other logic
     if(Array.isArray(props.obj.imageUrl)) {
     return (
@@ -14,7 +15,7 @@ function Post(props) {
         <img src={url} alt="Abdra ka dabdra"/>
         );
     })}
-    <Footer obj={props.obj}/>
+    <Footer obj={props.obj} changePID={props.changePID}/>
     </div>
 </div>
     );
@@ -25,7 +26,7 @@ function Post(props) {
                 <h4>{props.obj.username}</h4>
                 <p>{props.obj.text}</p>
                 {props.obj.imageUrl?<img src={props.obj.imageUrl} alt="Abra ka dabra" />:""}
-                <Footer obj={props.obj}/>
+                <Footer obj={props.obj} changePID={props.changePID}/>
             </div>
         );
     }
@@ -39,7 +40,12 @@ function Footer(props){
             </div>
             <div>
                 {props.obj.nocp>0?props.obj.nocp:0}
-                <Link to={"/post?username="+props.obj.username+"&postid="+props.obj.postID} onClick={e=>{pushPostToStack(e,props.obj)}}> comments</Link>
+                <Link to={"/post?username="+localStorage.getItem("username")+"&postid="+props.obj.postID} onClick={e=>{
+                    pushPostToStack(e,props.obj);
+                    if(props.changePID){
+                        props.changePID({...props.obj,postID:props.obj.postID});
+                    }
+                    }}> comments</Link>
             </div>
         </div>
     );
@@ -47,16 +53,7 @@ function Footer(props){
 }
 
 function pushPostToStack(e,obj){
-    if(localStorage.getItem("postobj")){
-        var arr=JSON.parse(localStorage.getItem("postobj"));
-        arr.push(obj);
-        localStorage.setItem("postobj",JSON.stringify(arr));
-    }
-    else{
-        localStorage.setItem("postobj",JSON.stringify([obj]));
-    }
-
-
+    localStorage.setItem("postobj",JSON.stringify(obj));
 }
 
 export { Post };

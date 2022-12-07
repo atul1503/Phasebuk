@@ -46,6 +46,13 @@ import { Post } from './Components/Post';
     setPosts(newstate);
   }
 
+  function incrementLikes(postobj){
+    console.log("hi");
+    {postobj.likes>0?postobj.likes=postobj.likes+1:postobj.likes=1}
+    window.location.reload();
+  }
+
+
    return (
     <div>
       
@@ -55,7 +62,7 @@ import { Post } from './Components/Post';
         {  
           return(
            <div key={postobj.postID} >
-           <Post obj={postobj}/>
+           <Post obj={postobj} onClick={e=>{localStorage.setItem("postobj",JSON.stringify(postobj))}} />
            </div>
           )
         }
