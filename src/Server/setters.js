@@ -1,5 +1,5 @@
 const { async } = require("@firebase/util");
-const { getDoc, setDoc } = require("firebase/firestore");
+const { getDoc, setDoc, increment } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,setDocgetDoc,doc } =firestore;
 
@@ -32,7 +32,14 @@ async function addPost(db,postobj){
     var maxi=await getMaxPostId(db);
     postobj.postID=(maxi+1).toString();
     await setDoc(doc(db,"Posts",postobj.postID.toString()),postobj);
-    incrementMaxPostId(db);
+    await incrementMaxPostId(db);
+    if(parseInt(postobj.parentPostID)>0){
+        var parentpostdoc=await getDoc(doc(db,"Posts",postobj.parentPostID));
+        var obj=parentpostdoc.data();
+        if(obj.nocp) {obj.nocp=obj.nocp+1;}
+        else {obj.nocp=1}
+        await setDoc(doc(db,"Posts",postobj.parentPostID),obj);
+    }
 
 }
 
