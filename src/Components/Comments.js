@@ -39,7 +39,8 @@ function Comments(){
         //backend has to provide correct postid to this obj and store the entire obj in db
         )
         .then(str=>str.text())
-        .then(msg=>{if(msg==="success") {
+        .then(msg=>{
+            if(msg==="success") {
             setpostobj({...postobj,nocp:postobj.nocp+1})
         }});
     }

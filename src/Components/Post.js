@@ -20,7 +20,7 @@ function Post(props) {
     }
 
     useEffect(function(){
-        if(obj.postID!==props.obj.postID){
+        if(obj.postID!==props.obj.postID || props.obj.nocp!==obj.nocp){
             setobj({...props.obj})
         }
     });
@@ -53,6 +53,9 @@ function Post(props) {
     );
     }
     else {
+        if(props.obj.postID==="3"){
+            console.log("hi");
+        }
         return (
             <div onClick={likePost}>
                 <h4>{obj.username}</h4>
