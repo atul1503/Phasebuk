@@ -14,13 +14,14 @@ import { Post } from './Components/Post';
     }
     },[]) 
 
-  useEffect(function() { getHome(); })
+  useEffect(function() { getHome()});
   
   async function getHome(){
     var firstrender=null,wantMorePosts=null;
     if(posts.isFirstRender){firstrender=true}
     else if(posts.wantMorePosts) {wantMorePosts=true}
     else return;
+
 
 
     if(posts.lastpostid) {var responseobj=await fetch("http://localhost:8000/home?username="+localStorage.getItem('username')+"&lastpostid="+posts.lastpostid) }
@@ -42,16 +43,8 @@ import { Post } from './Components/Post';
     newstate.wantMorePosts=true;
     if(posts.postArr.length<1) {return;}
     newstate.lastpostid=posts.postArr[posts.postArr.length-1].postID+1;
-    //console.log(newstate);
     setPosts(newstate);
   }
-
-  function incrementLikes(postobj){
-    console.log("hi");
-    {postobj.likes>0?postobj.likes=postobj.likes+1:postobj.likes=1}
-    window.location.reload();
-  }
-
 
    return (
     <div>

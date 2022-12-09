@@ -1,3 +1,4 @@
+const { getCountFromServer } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,limit,doc,getDoc } =firestore;
 
@@ -10,17 +11,18 @@ async function getUserDataFromDB(db,id){
     return userobj;
 }
 
-async function getPostsDataFromDB(db,id){
-    var postcoll=collection(db,"Posts");
-    var q=query(postcoll,where("postID","==",id));
-    var qSnapshot=await getDocs(q);
-    var postObj=qSnapshot.docs[0].data();
+async function getPostsDataFromDB(db,id,username){
+    var postObj=(await getDoc(doc(db,"Posts",id))).data();
     q=query(collection(db,"Posts"),where("parentPostID","==",id));
     qSnapshot=await getDocs(q);
     var childpostobjArr=[];
     qSnapshot.forEach(function(doc){
         childpostobjArr.push(doc.data());
     });
+    childpostobjArr.forEach(async (obj,index)=>{
+        obj.isLiked=await isPostLiked(db,username,obj.postID);
+    });
+    postObj.isLiked=await isPostLiked(db,username,postObj.postID);
     return {parentpost:postObj,childposts:childpostobjArr};
 }
 
@@ -48,7 +50,27 @@ async function getHomeFromDB(db,id,lastpostid){
         qSnapshot.forEach(function(doc){
             posts.push(doc.data());
         })
+    
+    posts.forEach((obj,index)=>{
+        if(isPostLiked(db,obj.username,obj.postID)){
+            obj.isLiked=true;
+        }
+        else{
+            obj.isLiked=false;
+        }
+    });
     return posts;
+}
+
+async function isPostLiked(db,username,postID){
+    //is post liked by this username.
+    var q=query(collection(db,"LikedBy"),where("postID","==",postID),where("username","==",username));
+    var qSnapshot=await getCountFromServer(q);
+    if(qSnapshot.data().count>0){
+        return true;
+    }
+    return false;
+
 }
 
 async function verifyCredentialsFromDB(db,id,pass){
@@ -126,5 +148,6 @@ module.exports={
     getNotificationsFromDB,
     getFriends,
     getFriendRequestsFromDB,
-    getLikedUsers
+    getLikedUsers,
+    isPostLiked
 };
