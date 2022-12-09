@@ -25,6 +25,15 @@ function Post(props) {
         }
     });
 
+    useEffect(function(){
+        fetch("http://localhost:8000/likes?postID="+obj.postID)
+        .then(data=>data.json())
+        .then(newobj=>{ var arr=newobj.likers;
+            if(arr.includes(localStorage.getItem("username"))){
+                setobj({...obj,isLiked:true});
+            }
+        })
+    },[obj.isLiked]);
 
 
     //other logic
@@ -56,7 +65,6 @@ function Post(props) {
 }
 
 function Footer(props){
-
 
     return(
         <div>

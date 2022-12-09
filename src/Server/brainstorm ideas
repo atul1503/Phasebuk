@@ -24,6 +24,8 @@ than 0.If it is true then pop the current post from stack and push the parent po
 parent post (/post endpoint).if it has no parent post id just navigate to home page.
 
 ----------------------------------
+home page will render.before render the posts will be called.after than render will happen of all posts.
+each post will be passed their corresponding props object to render.
 
 -------------------------------
 when getting posts,check with the postid to see if the username has liked the post or not.if it has then in the post obj add isliked attribute as well.In fact isLiked attribute should be false for non liked posts but it should be there in the postobj but only in the front end not in the Posts collection of db.

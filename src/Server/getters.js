@@ -129,14 +129,7 @@ async function getLikedUsers(db,postID){
         likers.push(doc.data().username);
     })
     //
-
-    q=query(collection(db,"User"),where("username","in",likers));
-    qSnapshot=await getDocs(q);
-    likers=[];
-    qSnapshot.forEach(function(doc){
-        likers.push(doc.data().name);
-    })
-    return likers;
+    return {likers:likers};
 }
 
 

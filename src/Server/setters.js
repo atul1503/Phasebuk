@@ -29,7 +29,6 @@ async function incrementMaxPostId(db){
 
 
 async function addPost(db,postobj){
-    //console.log("hi");
     var maxi=await getMaxPostId(db);
     postobj.postID=(maxi+1).toString();
     await setDoc(doc(db,"Posts",postobj.postID.toString()),postobj);
@@ -39,7 +38,7 @@ async function addPost(db,postobj){
         var obj=parentpostdoc.data();
         if(obj.nocp) {obj.nocp=obj.nocp+1;}
         else {obj.nocp=1}
-        await setDoc(doc(db,"Posts",postobj.parentPostID),obj);
+        await setDoc(doc(db,"Posts",postobj.parentPostID.toString()),obj);
     }
 
 }
