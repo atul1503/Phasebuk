@@ -23,5 +23,12 @@ When the user presses the back button we should check if the current post object
 than 0.If it is true then pop the current post from stack and push the parent post in stack and navigate to 
 parent post (/post endpoint).if it has no parent post id just navigate to home page.
 
+----------------------------------
+
+-------------------------------
+when getting posts,check with the postid to see if the username has liked the post or not.if it has then in the post obj add isliked attribute as well.In fact isLiked attribute should be false for non liked posts but it should be there in the postobj but only in the front end not in the Posts collection of db.
+this attribute can be used in other routes also for example: post ,home and comments.When the user likes a post and clicks on it,react must update the post obj with the isLiked attribute.
+
+
 
 

@@ -2,6 +2,7 @@ const { async } = require("@firebase/util");
 const { getDoc, setDoc, increment } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,setDocgetDoc,doc } =firestore;
+const { isPostLiked } =require("./getters");
 
 async function setDocinTable(db,collection_name,document_obj,id){
     await setDoc(doc(db,collection_name,id),document_obj);
@@ -55,11 +56,12 @@ async function createUserProfile(db,req){
 
 
 async function likeit(db,username,postid){
+    if(await (await getDoc(doc(db,"LikedBy",username+postid))).data()) return {};
     await setDoc(doc(db,"LikedBy",username+postid),{username: username,postID: postid});
     var postobj=(await getDoc(doc(db,"Posts",postid))).data();
     postobj.likes++;
     await setDoc(doc(db,"Posts",postid),postobj);
-    return "success";
+    return postobj;
 
 }
 

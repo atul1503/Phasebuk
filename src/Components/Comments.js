@@ -11,7 +11,7 @@ function Comments(){
     const [postobj,setpostobj]=useState(JSON.parse(localStorage.getItem("postobj")));
 
     useEffect(function(){
-        fetch("http://localhost:8000/post?postID="+postobj.postID)
+        fetch("http://localhost:8000/post?postID="+postobj.postID+"&username="+localStorage.getItem("username"))
         .then(data=>data.json())
         .then(obj=>{
             setChildPosts(obj.childposts);
@@ -46,7 +46,7 @@ function Comments(){
 
     function goToPrev(e){
         if(parseInt(postobj.parentPostID)>0){
-            fetch("http://localhost:8000/post?postID="+postobj.parentPostID)
+            fetch("http://localhost:8000/post?postID="+postobj.parentPostID+"&username="+localStorage.getItem("username"))
         .then(data=>data.json())
         .then(obj=>{
             localStorage.setItem("postobj",JSON.stringify(obj));
