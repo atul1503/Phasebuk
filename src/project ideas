@@ -15,7 +15,7 @@ User:
 Posts:
   postID = > pk
   text
-  mediaUrl
+  mediaURL
   parentPostID
   username
   likes

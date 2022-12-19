@@ -13,17 +13,7 @@ async function getUserDataFromDB(db,id){
 
 async function getPostsDataFromDB(db,id,username){
     var postObj=(await getDoc(doc(db,"Posts",id))).data();
-    q=query(collection(db,"Posts"),where("parentPostID","==",id));
-    qSnapshot=await getDocs(q);
-    var childpostobjArr=[];
-    qSnapshot.forEach(function(doc){
-        childpostobjArr.push(doc.data());
-    });
-    childpostobjArr.forEach(async (obj,index)=>{
-        obj.isLiked=await isPostLiked(db,username,obj.postID);
-    });
-    postObj.isLiked=await isPostLiked(db,username,postObj.postID);
-    return {parentpost:postObj,childposts:childpostobjArr};
+    return postObj;
 }
 
 
@@ -36,30 +26,25 @@ async function getHomeFromDB(db,id,lastpostid){
         friendsid.push(doc.data().friend2ID);
     });
     //console.log(friendsid);
-    var posts=[];
+    var postids=[];
     var postcoll=collection(db,"Posts");
         if(lastpostid){
-        var q2=query(postcoll,where("username","in",friendsid),where("postID",">=",lastpostid),orderBy("postID","desc"),limit(10));
+            lastpostid=Number(lastpostid);
+        var q2=query(postcoll,where("username","in",friendsid),where("postID","<=",lastpostid),orderBy("postID","desc"),limit(10));
         }
         else{
-            var q2=query(postcoll,where("username","in",friendsid),orderBy("timestamp","desc"),limit(10));
+            var q2=query(postcoll,where("username","in",friendsid),orderBy("postID","desc"),limit(10));
             //orderBy("timestamp","desc"),limit(10)
         }
         var qSnapshot=await getDocs(q2);
         //console.log(qSnapshot.docs);
         qSnapshot.forEach(function(doc){
-            posts.push(doc.data());
+            postids.push(doc.data().postID);
         })
+
+        //console.log(postids);
     
-    posts.forEach((obj,index)=>{
-        if(isPostLiked(db,obj.username,obj.postID)){
-            obj.isLiked=true;
-        }
-        else{
-            obj.isLiked=false;
-        }
-    });
-    return posts;
+    return postids;
 }
 
 async function isPostLiked(db,username,postID){
