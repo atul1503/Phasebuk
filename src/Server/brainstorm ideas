@@ -26,11 +26,29 @@ parent post (/post endpoint).if it has no parent post id just navigate to home p
 ----------------------------------
 home page will render.before render the posts will be called.after than render will happen of all posts.
 each post will be passed their corresponding props object to render.
-
 -------------------------------
 when getting posts,check with the postid to see if the username has liked the post or not.if it has then in the post obj add isliked attribute as well.In fact isLiked attribute should be false for non liked posts but it should be there in the postobj but only in the front end not in the Posts collection of db.
 this attribute can be used in other routes also for example: post ,home and comments.When the user likes a post and clicks on it,react must update the post obj with the isLiked attribute.
 
+-------------------------------------
+
+when liking navigate to correponding post instead of nav(-1).Also ensure that while liking set the corresponding postobj in localstorage.
+--------------------------------------------
+
+
+fresh restart
+
+the home component can have mutiple posts rendered.But instead of loading their post objects,we should let the post get their data themselves.Home component should intentionally get only the postid of the posts.Home comp should also have a loadData(intially true) state which would help if you delete a post.Home comp should also pass setloadData callback to the post comps.When we want to load more posts,we can set loadData to be true but that will reload the same data again;we dont want that.So in that case we also will set wantMorePosts state to true.if we see wantMorePosts is true then load data with posts<=the lowest post in the postid array.
 
 
 
+The post component would get their postid as props.Post will get its data by its own useEffect.There should be a state object called loadData which should be a boolean which should initially be true.useEffect would get data only if loadData will be true and then useEffect will set loadData to false.Post object should also be a state object.When useEffect pulls data then it will change post object and loadData resulting in 2 renders.If the user likes a post an onClick callback should not only increment the like counter on the server side it should also set the loadData to be true;it should also make another call to get the likes of the post and check if the username matches that of the logged in user,if the username is there in that liked list then create isLiked property for the postobject(this will be used in rendering).This way if the user has already liked it before it will set the isLiked.This also means that if the user likes it in this session then because loadData will be set to true when he likes it,react will have to run the useEffect associated with the loadData conditional and will check the likes.When a post gets deleted it should first inform that to the server and then run the prop callback given by the parent comp and setting the parent comp loadData to be true.This way parent component will re render when a post gets deleted/edited or a new post gets added.When the comment button gets clicked it will navigate to /post with the correspoonding post's postid as query param.
+
+
+Comment comp will also have loadData state as true initially. useEffect will load post data and get its child post object IDs as one state object.so 2 state objects.One is loadData other is post object and its child post ids.While rendering it will pass the post ids and setloaddata callback to the post comps.It should have its own back button. Back button will navigate to its parent post.So for that it has to know the parent post id to navigate to it.Current post obj will be already be loaded by the time the user decides to go back so the parent post id can be retreived through this object.
+
+But comment comp will have its main post as post comp.The only thing that is owned by comment comp is replies form.To create replies ,the comment comp can directly update the server with the reply post.It has the post id and username.After updating the server,it can set the loadData of the post comp.
+
+
+childloadDataHandler is a state in comment comp which should initially be null. setchildloadDataHandler is the associate setter.
+we will pass setchildloadDataHandler to post comp as channelforLoadData. post comp will call channelforLoadData and pass setLoadData setter as an argument.This call will set childloadDataHandler as the setter for loadData(setLoadData) in post comp.So when we call childloadDataHandler in comment comp with a true or false as an arg ,it will change the loadData state of the post comp.But in comment comp,we have to check if childloadDataHandler exists as not null.

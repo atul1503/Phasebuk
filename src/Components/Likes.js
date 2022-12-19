@@ -9,7 +9,7 @@ function Likes(){
     useEffect(function(){
         fetch("http://localhost:8000/likes?postID="+params.get("postid"))
         .then(data=>data.json())
-        .then(arr=>{
+        .then(obj=>{ var arr=obj.likers;
             setLikesArr(arr);
         })
     })
@@ -18,7 +18,9 @@ function Likes(){
         <div>
             <button onClick={e=>{ 
                 
-                nav(-1)
+                nav(-1);
+
+                //nav("/post?username="+localStorage.getItem("username")+"&postID="+params.get("postid"));
                 
                 }}>←---Back to Post</button>
             <ul>

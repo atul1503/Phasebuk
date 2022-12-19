@@ -1,96 +1,60 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Post(props) {
-    const [obj,setobj]=useState(props.obj);
+ const [loadData,setloadData]=useState(true);
+ const [postobj,setpostobj]=useState({});
+ const nav=useNavigate();
+ if(props.channelforLoadData && typeof props.channelforLoadData !=='function') props.channelforLoadData(setloadData);
 
-    function likePost(){
-        var postobj=obj;
-        if(postobj.isLiked){
-            return;
-        }
-        fetch("http://localhost:8000/likeit?username="+localStorage.getItem("username")+"&postID="+postobj.postID)
-        .then(res=>res.json())
-        .then(obj=>{
-            if(Object.keys(obj).length>0){
-                obj.isLiked=true;
-                setobj(obj);
-            }
-        })
-    }
-
-    useEffect(function(){
-        if(obj.postID!==props.obj.postID || props.obj.nocp!==obj.nocp){
-            setobj({...props.obj})
-        }
-    });
-
-    useEffect(function(){
-        fetch("http://localhost:8000/likes?postID="+obj.postID)
+ 
+ useEffect(function(){
+    if(!loadData) return;
+    fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
+    .then(data=>data.json())
+    .then(obj=>{
+        //setpostobj(obj);
+        //setloadData(false);
+        fetch("http://localhost:8000/likes?postID="+props.pid)
         .then(data=>data.json())
-        .then(newobj=>{ var arr=newobj.likers;
-            if(arr.includes(localStorage.getItem("username"))){
-                setobj({...obj,isLiked:true});
+        .then(bobj=>{
+            if(bobj.likers.includes(localStorage.getItem("username"))){
+                setpostobj({...obj,isLiked:true});
             }
-        })
-    },[obj.isLiked]);
+            else{
+                setpostobj(obj);
+            }
+        });
+        setloadData(false);
+    })
+ });
 
 
-    //other logic
-    if(Array.isArray(obj.imageUrl)) {
-    return (
-<div onClick={likePost}>
-    <p>{obj.text}</p>
+
+ function likePost(){
+    return;
+ }
+
+ return (
     <div>
-    {obj.imageUrl.map(function(url) {
-        return(
-        <img src={url} alt="Abdra ka dabdra"/>
-        );
-    })}
-    <Footer obj={obj} changePID={props.changePID}/>
-    </div>
-</div>
-    );
-    }
-    else {
-        if(props.obj.postID==="3"){
-            console.log("hi");
+        <h3>{postobj.username}</h3>
+        <p>{postobj.text}</p>
+        {(postobj.hasOwnProperty("mediaURL") && Array.isArray(postobj.mediaURL)) ?
+                postobj.mediaURL.map(function(url, idx) {
+             return (
+                  <img src={url} alt="Abra ka dabra" />
+                 );
+              }) : postobj.hasOwnProperty("mediaURL")?
+           <img src={postobj.mediaURL} alt="Abra ka dabra" /> : ""
         }
-        return (
-            <div onClick={likePost}>
-                <h4>{obj.username}</h4>
-                <p>{obj.text}</p>
-                {obj.imageUrl?<img src={obj.imageUrl} alt="Abra ka dabra" />:""}
-                <Footer obj={obj} changePID={props.changePID} />
-            </div>
-        );
-    }
-}
+        <div>{postobj.likes>0?<span onClick={likePost}>{postobj.likes}</span>:0} likes</div>
+        {postobj.nocp>0?postobj.nocp:"0"}
+        <Link to={"/post?postID="+postobj.postID}> comments</Link>
+    </div>
+ );
 
-function Footer(props){
+ 
 
-    return(
-        <div>
-            {props.obj.isLiked?"You 👍 this":""}
-            <div>{props.obj.likes>0?props.obj.likes:0} 
-            {props.obj.likes>0?<Link to={"/likes?username="+props.obj.username+"&postid="+props.obj.postID} > likes</Link>:" likes"}
-            </div>
-            <div>
-                {props.obj.nocp>0?props.obj.nocp:0}
-                <Link to={"/post?username="+localStorage.getItem("username")+"&postid="+props.obj.postID} onClick={e=>{
-                    pushPostToStack(e,props.obj);
-                    if(props.changePID!==undefined){
-                        props.changePID({...props.obj});
-                    }
-                    }}> comments</Link>
-            </div>
-        </div>
-    );
-
-}
-
-function pushPostToStack(e,obj){
-    localStorage.setItem("postobj",JSON.stringify(obj));
 }
 
 export { Post };
