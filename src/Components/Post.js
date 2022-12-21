@@ -30,7 +30,7 @@ function Post(props) {
         if(loadData) setloadData(false);
 
     })
- },[loadData]);
+ });
 
  useEffect(function(){
     //this effect lets post comp re render with new data when parent renders.
@@ -59,15 +59,10 @@ function Post(props) {
 
 
  function likePost(){
-    if(!postobj.isLiked){
         fetch("http://localhost:8000/likeit?username="+localStorage.getItem("username")+"&postID="+postobj.postID)
         .then(()=>{
             setloadData(true);
         })
-    }
-    else{
-        //to be implemented later
-    }
  }
 
  return (
@@ -82,8 +77,8 @@ function Post(props) {
               }) : postobj.hasOwnProperty("mediaURL")?
            <img src={postobj.mediaURL} alt="Abra ka dabra" /> : ""
         }
-        {postobj.isLiked?"You 👍 this ":""}
-        <div>{postobj.likes>0?<span onClick={likePost}> {postobj.likes} </span>:0} <Link to={"/likes?postID="+postobj.postID}>likes</Link> </div>
+        {postobj.isLiked?" ❤️ ":""}
+        <div><span onClick={likePost}> 👍 </span>{postobj.likes>0?postobj.likes:0} <Link to={"/likes?postID="+postobj.postID}>likes</Link> </div>
         {postobj.nocp>0?postobj.nocp:"0"} 
         <Link to={"/post?postID="+postobj.postID}> comments</Link>
     </div>

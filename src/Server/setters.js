@@ -1,5 +1,5 @@
 const { async } = require("@firebase/util");
-const { getDoc, setDoc, increment } = require("firebase/firestore");
+const { getDoc, setDoc, increment, deleteDoc } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,setDocgetDoc,doc } =firestore;
 const { isPostLiked } =require("./getters");
@@ -55,12 +55,20 @@ async function createUserProfile(db,req){
 
 
 async function likeit(db,username,postid){
-    if(await (await getDoc(doc(db,"LikedBy",username+postid))).data()) return {};
-    await setDoc(doc(db,"LikedBy",username+postid),{username: username,postID: postid});
+    var docref=doc(db,"LikedBy",username+postid);
+    if(await (await getDoc(docref)).data()) {
+        //user already liked it
+        deleteDoc(docref);
+        var postobj=(await getDoc(doc(db,"Posts",postid))).data();
+        postobj.likes--; 
+        await setDoc(doc(db,"Posts",postid),postobj);   
+        return({});
+    }
+    await setDoc(docref,{username: username,postID: postid});
     var postobj=(await getDoc(doc(db,"Posts",postid))).data();
     postobj.likes++;
     await setDoc(doc(db,"Posts",postid),postobj);
-    return postobj;
+    return(postobj);
 
 }
 
