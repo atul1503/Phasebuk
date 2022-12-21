@@ -1,74 +1,83 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Post } from "./Post";
 
-const { useEffect, useState } = require("react");
+const { useEffect, useState, useRef } = require("react");
 
 function Comments(){
-    //remote localstorage key on back button click
-    const [childposts,setChildPosts]=useState([]);
-    const [reply,setReply]=useState("");
+    const [childpids,setchildpids]=useState([]);
+    const [count,setcount]=useState(1); //should be used for updating when required. 
     const nav=useNavigate();
-    const [params,setparams]=useSearchParams();
-    var postobj=JSON.parse(localStorage.getItem("postobj")).pop();
+    const inputRef=useRef(null);
+    const params=new URLSearchParams(document.location.search);
+    const location=useLocation();    
 
     useEffect(function(){
-        fetch("http://localhost:8000/post?postID="+postobj.postID)
+        fetch("http://localhost:8000/childpids?postID="+params.get("postID"))
         .then(data=>data.json())
-        .then(obj=>{
-            setChildPosts(obj.childposts);
-        });
-    },[postobj.postID]);
+        .then(arrobj=>{
+            setchildpids(arrobj.arr);
+        })
+    },[location.search,count]);
+
+    function replyPost(e){
+        var bdy={
+            text: inputRef.current.value,
+            parentPostID: Number(params.get("postID")),
+            username: localStorage.getItem("username"),
+            likes:0,
+            nocp:0,
+            timestamp: Number(new Date().getTime())
+        };
+        fetch("http://localhost:8000/newpost",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(bdy)
+        })
+        .then(data=>data.text())
+        .then(data=>{
+            if(data==="success"){
+                setcount(-count);
+            }
+        })
+    }
+
+    function goBack(){
+        fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+params.get("postID"))
+        .then(data=>data.json())
+        .then(pobj=>{
+            if(pobj.parentPostID){
+                nav("/post?postID="+pobj.parentPostID);
+                //window.location.reload();
+                setcount(-count);
+            }
+            else{
+                nav("/");
+            }
+        })
+    }
 
     return(
         <div>
-            <button onClick={e=>{
-                var arr=JSON.parse(localStorage.getItem("postobj"));
-                arr.pop();
-                localStorage.setItem("postobj",JSON.stringify(arr));
-                nav(-1);
-
-            }}>←---Back to Parent Post</button>
-            <Post obj={postobj}/>
-            <input type="text" name="text" onChange={e=>setReply(e.target.value)}/>
-            <button onClick={e=>{createPost(e,reply,postobj)}}>Reply</button>
-            {childposts.length===0?<h5>No one replied to {postobj.username}'s post</h5>:""}
-            <ul>
-                {
-                    childposts.map(function(item){
-                        return(
-                        <li key={item.postID}>
-                            <Post obj={item} />
-                        </li>
-                        );
-                    })
-                }
-            </ul>
-
+            <button onClick={goBack}>Go back</button>
+        <Post pid={params.get("postID")} count={count}/>
+        <input type="text" ref={inputRef}/>
+        <button onClick={replyPost}>Reply</button>
+        {childpids.map(function(pid,idx){
+            return(
+                <div key={pid}>
+                    <Post pid={pid}/>
+                </div>
+            )
+        })}
         </div>
     )
+
+
+
 }
 
 
-function createPost(e,text,obj){
-    var timestamp=new Date();
-    timestamp=timestamp.getMilliseconds();
-    fetch("http://localhost:8000/newpost",{
-      method:'POST',
-      headers:{
-        'Content-Type':'Application/json'
-      },
-      body: JSON.stringify({
-        text:text,
-        nocp:0,
-        likes:0,
-        timestamp:timestamp,
-        username:localStorage.getItem("username"),
-        parentPostID:obj.postID.toString()
-    })  
-    }
-    //backend has to provide correct postid to this obj and store the entire obj in db
-    )
-    .then(str=>{if(str==="success") console.log(str);})
-}
 
 export default Comments;

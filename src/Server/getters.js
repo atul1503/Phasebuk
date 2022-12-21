@@ -1,3 +1,4 @@
+const { getCountFromServer } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,limit,doc,getDoc } =firestore;
 
@@ -10,18 +11,9 @@ async function getUserDataFromDB(db,id){
     return userobj;
 }
 
-async function getPostsDataFromDB(db,id){
-    var postcoll=collection(db,"Posts");
-    var q=query(postcoll,where("postID","==",id));
-    var qSnapshot=await getDocs(q);
-    var postObj=qSnapshot.docs[0].data();
-    q=query(collection(db,"Posts"),where("parentPostID","==",id));
-    qSnapshot=await getDocs(q);
-    var childpostobjArr=[];
-    qSnapshot.forEach(function(doc){
-        childpostobjArr.push(doc.data());
-    });
-    return {parentpost:postObj,childposts:childpostobjArr};
+async function getPostsDataFromDB(db,id,username){
+    var postObj=(await getDoc(doc(db,"Posts",id))).data();
+    return postObj;
 }
 
 
@@ -34,21 +26,36 @@ async function getHomeFromDB(db,id,lastpostid){
         friendsid.push(doc.data().friend2ID);
     });
     //console.log(friendsid);
-    var posts=[];
+    var postids=[];
     var postcoll=collection(db,"Posts");
         if(lastpostid){
-        var q2=query(postcoll,where("username","in",friendsid),where("postID",">=",lastpostid),orderBy("postID","desc"),limit(10));
+            lastpostid=Number(lastpostid);
+        var q2=query(postcoll,where("username","in",friendsid),where("postID","<=",lastpostid),orderBy("postID","desc"),limit(10));
         }
         else{
-            var q2=query(postcoll,where("username","in",friendsid),orderBy("timestamp","desc"),limit(10));
+            var q2=query(postcoll,where("username","in",friendsid),orderBy("postID","desc"),limit(10));
             //orderBy("timestamp","desc"),limit(10)
         }
         var qSnapshot=await getDocs(q2);
         //console.log(qSnapshot.docs);
         qSnapshot.forEach(function(doc){
-            posts.push(doc.data());
+            postids.push(doc.data().postID);
         })
-    return posts;
+
+        //console.log(postids);
+    
+    return postids;
+}
+
+async function isPostLiked(db,username,postID){
+    //is post liked by this username.
+    var q=query(collection(db,"LikedBy"),where("postID","==",postID),where("username","==",username));
+    var qSnapshot=await getCountFromServer(q);
+    if(qSnapshot.data().count>0){
+        return true;
+    }
+    return false;
+
 }
 
 async function verifyCredentialsFromDB(db,id,pass){
@@ -107,16 +114,21 @@ async function getLikedUsers(db,postID){
         likers.push(doc.data().username);
     })
     //
-
-    q=query(collection(db,"User"),where("username","in",likers));
-    qSnapshot=await getDocs(q);
-    likers=[];
-    qSnapshot.forEach(function(doc){
-        likers.push(doc.data().name);
-    })
-    return likers;
+    return {likers:likers};
 }
 
+
+async function getchildpids(db,parentpostid){
+    var parentpostid=Number(parentpostid);
+    //console.log(parentpostid);
+    var q=query(collection(db,"Posts"),where("parentPostID","==",parentpostid));
+    var qSnapshot=await getDocs(q);
+    var arr=[];
+    qSnapshot.forEach(function(doc){
+        arr.push(doc.data().postID);
+    });
+    return({arr:arr});
+} 
 
 module.exports={
     getUserDataFromDB,
@@ -126,5 +138,7 @@ module.exports={
     getNotificationsFromDB,
     getFriends,
     getFriendRequestsFromDB,
-    getLikedUsers
+    getLikedUsers,
+    isPostLiked,
+    getchildpids
 };

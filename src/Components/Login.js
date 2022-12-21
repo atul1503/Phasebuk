@@ -16,6 +16,7 @@ function Login(){
         .then(data => data.json())
         .then(obj => {
             if(obj.isValid){
+                localStorage.removeItem("postobj");
                 localStorage.setItem("username",cred.username);
                 nav("/home");
                 setCred({...cred,triedLogin:true});

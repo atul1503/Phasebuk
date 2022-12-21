@@ -1,7 +1,7 @@
 function Error(){
     return(
         <div>
-            Error page.
+            Oops! We didn't find what you are looking for :(
         </div>
     )
 }

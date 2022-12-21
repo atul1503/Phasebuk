@@ -3,8 +3,8 @@ const credndb=require('./Credentials');
 const firebase_firestore=require("firebase/firestore");
 const getters=require("./getters");
 const setters=require("./setters");
-const { getHomeFromDB,getPostsDataFromDB,getLikedUsers }=getters;
-const { createUserProfile,addPost }=setters;
+const { getHomeFromDB,getPostsDataFromDB,getLikedUsers,getchildpids }=getters;
+const { createUserProfile,addPost,likeit }=setters;
 const { collection, query, where, getDocs } =firebase_firestore;
 
 
@@ -24,8 +24,15 @@ app.get('/likes',async function(req,res) { res.send(await getLikedUsers(db,req.q
 app.post('/signup',async function(req,res) { res.send( await createUserProfile(db,req) )})
 app.get('/users',async function(req,res) {  res.send(await getUserData(req,res)) } );
 app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
+<<<<<<< HEAD
 app.get('/home',async function(req,res) {  res.send(await getHome(req,res)) } );
 app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
+=======
+app.get('/homepostids',async function(req,res) {  res.send(await getHome(req,res)) } );
+app.get("/likeit",async function(req,res){ res.send(await likeit(db,req.query.username,req.query.postID) ) });
+app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
+app.get("/childpids",async function(req,res) { res.send(await getchildpids(db,req.query.postID)) })
+>>>>>>> test
 
 
 //callback handlers
@@ -35,7 +42,7 @@ async function getUserData(req,res){
 }
 
 async function getPostsData(req,res) {
-    return await getters.getPostsDataFromDB(db,req.query.postID);
+    return await getters.getPostsDataFromDB(db,req.query.postID,req.query.username);
 }
 
 async function getHome(req,res){

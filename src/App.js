@@ -6,61 +6,53 @@ import { Post } from './Components/Post';
 
 
  function App(props) {
-  const [posts,setPosts] = useState({postArr: [],lastpostid: null,isFirstRender: true,wantMorePosts: false});
+  //const [posts,setPosts] = useState({postArr: [],lastpostid: null,loadData: true,wantMorePosts: false});
   const nav=useNavigate();
+  const [loadData,setloadData]=useState(true);
+  const [postIDArr,setpostIDArr]=useState([]);
+  const [wantMorePosts,setwantMorePosts]=useState(false);
+  
+
   useEffect(function(){
     if(!localStorage.getItem("username")){
       nav('/login')
     }
     },[]) 
 
-  useEffect(function() { getHome(); })
+  useEffect(function() { getHome()});
   
   async function getHome(){
-    var firstrender=null,wantMorePosts=null;
-    if(posts.isFirstRender){firstrender=true}
-    else if(posts.wantMorePosts) {wantMorePosts=true}
+    var loaddata,wantmorePosts;
+    if(loadData){loaddata=true}
+    else if(wantMorePosts) {wantmorePosts=true}
     else return;
 
 
-    if(posts.lastpostid) {var responseobj=await fetch("http://localhost:8000/home?username="+localStorage.getItem('username')+"&lastpostid="+posts.lastpostid) }
-    else { var responseobj=await fetch("http://localhost:8000/home?username="+localStorage.getItem('username')) }
-    var homeposts=await responseobj.json();
-    var newstate=JSON.parse(JSON.stringify(posts));
-    if(firstrender) newstate.isFirstRender=false;
-    if(wantMorePosts) newstate.wantMorePosts=false;
-    newstate.postArr=homeposts;
-    if(homeposts.length>0)
-    newstate.lastpostid=homeposts[homeposts.length-1].postID;
-    //console.log(newstate);
-    setPosts(newstate);
+
+    if(wantmorePosts) {var responseobj=await fetch("http://localhost:8000/homepostids?username="+localStorage.getItem('username')+"&lastpostid="+postIDArr[postIDArr.length-1]) }
+    else { var responseobj=await fetch("http://localhost:8000/homepostids?username="+localStorage.getItem('username')) }
+    var homepostIDs=await responseobj.json();
+    setpostIDArr(homepostIDs);
+    if(loaddata) setloadData(false);
+    if(wantmorePosts) setwantMorePosts(false);
 
   }
 
   function getMore(e){
-    var newstate=JSON.parse(JSON.stringify(posts));
-    newstate.wantMorePosts=true;
-    if(posts.postArr.length<1) {return;}
-    newstate.lastpostid=posts.postArr[posts.postArr.length-1].postID+1;
-    //console.log(newstate);
-    setPosts(newstate);
+    setwantMorePosts(true);
   }
 
    return (
     <div>
       
-      {
-      posts.postArr.map(
-        function(postobj) 
-        {  
-          return(
-           <div key={postobj.postID} >
-           <Post obj={postobj}/>
-           </div>
-          )
-        }
-      )
-}
+      {postIDArr.map(function(id,idx){
+        return (
+          <div key={id}>
+        <Post pid={id}/>
+        </div>
+        );
+      })}
+
     <button onClick={getMore}> See more </button>
     </div>
   );

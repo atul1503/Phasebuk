@@ -7,18 +7,20 @@ function Likes(){
     const [params,setparams]=useSearchParams();
 
     useEffect(function(){
-        fetch("http://localhost:8000/likes?postID="+params.get("postid"))
+        fetch("http://localhost:8000/likes?postID="+params.get("postID"))
         .then(data=>data.json())
-        .then(arr=>{
+        .then(obj=>{ var arr=obj.likers;
             setLikesArr(arr);
         })
-    })
+    },[])
 
     return(
         <div>
             <button onClick={e=>{ 
                 
-                nav(-1)
+                nav("/post?postID="+params.get("postID"));
+
+                //nav("/post?username="+localStorage.getItem("username")+"&postID="+params.get("postid"));
                 
                 }}>←---Back to Post</button>
             <ul>
