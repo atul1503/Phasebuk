@@ -6,11 +6,11 @@ const credndb= require("./Credentials");
 var db=credndb.db;
 
 async function processPosts() {
-    for (var i = 0; i < 90; i++) {
+    for (var i = 0; i < 150; i++) {
       const obj = await getDoc(doc(db, "Posts", i.toString()));
       if (!obj.data()) continue;
       var vobj = obj.data();
-      if(vobj.text==="") {
+      if(true) {
         deleteDoc(doc(db,"Posts",i.toString()));
         console.log("deleted "+i)
       } 
