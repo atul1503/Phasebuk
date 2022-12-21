@@ -7,7 +7,6 @@ function Comments(){
     const [childpids,setchildpids]=useState([]);
     const [count,setcount]=useState(1); //should be used for updating when required. 
     const nav=useNavigate();
-    //you can call childloadDataHandler(true) or false to set loadData of post comp to true or false.
     const params=new URLSearchParams(document.location.search);
     const location=useLocation();    
 
@@ -50,7 +49,7 @@ function Comments(){
             if(pobj.parentPostID){
                 nav("/post?postID="+pobj.parentPostID);
                 //window.location.reload();
-                //setcount(-count);
+                setcount(-count);
             }
             else{
                 nav("/");
