@@ -118,6 +118,18 @@ async function getLikedUsers(db,postID){
 }
 
 
+async function getchildpids(db,parentpostid){
+    var parentpostid=Number(parentpostid);
+    //console.log(parentpostid);
+    var q=query(collection(db,"Posts"),where("parentPostID","==",parentpostid));
+    var qSnapshot=await getDocs(q);
+    var arr=[];
+    qSnapshot.forEach(function(doc){
+        arr.push(doc.data().postID);
+    });
+    return({arr:arr});
+} 
+
 module.exports={
     getUserDataFromDB,
     getPostsDataFromDB,
@@ -127,5 +139,6 @@ module.exports={
     getFriends,
     getFriendRequestsFromDB,
     getLikedUsers,
-    isPostLiked
+    isPostLiked,
+    getchildpids
 };
