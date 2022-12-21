@@ -7,33 +7,11 @@ function Post(props) {
  const nav=useNavigate();
  const location=useLocation();
  const [prevProps,setprevProps]=useState(props);
- const [parentloadSignal,setparentloadSignal]=useState(props.parentloadSignal);
  
- useEffect(function(){
-    //if(!loadData) return;
-    fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
-    .then(data=>data.json())
-    .then(obj=>{
-        //setpostobj(obj);
-        //setloadData(false);
-        fetch("http://localhost:8000/likes?postID="+props.pid)
-        .then(data=>data.json())
-        .then(bobj=>{
-            if(bobj.likers.includes(localStorage.getItem("username"))){
-                setpostobj({...obj,isLiked:true});
-            }
-            else{
-                setpostobj(obj);
-            }
-        });
-        if(loadData) setloadData(false);
-        if(parentloadSignal) setparentloadSignal(false);
-    })
- },[location.search]);
-
 
  useEffect(function(){
-    if(!loadData && !parentloadSignal) return;
+    //this effect helps the post comp to load data when it requires.
+    if(!loadData) return;
     fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
     .then(data=>data.json())
     .then(obj=>{
@@ -50,11 +28,12 @@ function Post(props) {
             }
         });
         if(loadData) setloadData(false);
-        if(parentloadSignal) setparentloadSignal(false);
+
     })
- },[loadData,parentloadSignal]);
+ },[loadData]);
 
  useEffect(function(){
+    //this effect lets post comp re render with new data when parent renders.
     if(prevProps===props  ||  !props.count) return;
     fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
     .then(data=>data.json())
