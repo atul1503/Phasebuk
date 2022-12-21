@@ -1,23 +1,67 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Post } from "./Post";
 
 const { useEffect, useState } = require("react");
 
 function Comments(){
     const [childpids,setchildpids]=useState([]);
-    const [childloadDataHandler,setchildloadDataHandler]=useState(null);
+    const [count,setcount]=useState(1); //should be used for updating when required. 
+    const nav=useNavigate();
     //you can call childloadDataHandler(true) or false to set loadData of post comp to true or false.
     const params=new URLSearchParams(document.location.search);
+    const location=useLocation();    
 
+    useEffect(function(){
+        fetch("http://localhost:8000/childpids?postID="+params.get("postID"))
+        .then(data=>data.json())
+        .then(arrobj=>{
+            setchildpids(arrobj.arr);
+        })
+    },[location.search,count]);
 
-    function replyPost(){
-        //
+    function replyPost(e){
+        var bdy={
+            text: e.target.value,
+            parentPostID: Number(params.get("postID")),
+            username: localStorage.getItem("username"),
+            likes:0,
+            nocp:0,
+            timestamp: Number(new Date().getMilliseconds())
+        };
+        fetch("http://localhost:8000/newpost",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(bdy)
+        })
+        .then(data=>data.text())
+        .then(data=>{
+            if(data==="success"){
+                setcount(-count);
+            }
+        })
     }
 
+    function goBack(){
+        fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+params.get("postID"))
+        .then(data=>data.json())
+        .then(pobj=>{
+            if(pobj.parentPostID){
+                nav("/post?postID="+pobj.parentPostID);
+                //window.location.reload();
+                //setcount(-count);
+            }
+            else{
+                nav("/");
+            }
+        })
+    }
 
     return(
         <div>
-        <Post pid={params.get("postID")} channelforLoadData={setchildloadDataHandler}/>
+            <button onClick={goBack}>Go back</button>
+        <Post pid={params.get("postID")} count={count}/>
         <input type="text"/>
         <button onClick={replyPost}>Reply</button>
         {childpids.map(function(pid,idx){
