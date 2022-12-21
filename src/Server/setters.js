@@ -60,7 +60,7 @@ async function likeit(db,username,postid){
         //user already liked it
         deleteDoc(docref);
         var postobj=(await getDoc(doc(db,"Posts",postid))).data();
-        postobj.likes--; 
+        if(postobj.likes>0) postobj.likes--; 
         await setDoc(doc(db,"Posts",postid),postobj);   
         return({});
     }

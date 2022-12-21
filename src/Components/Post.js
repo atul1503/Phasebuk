@@ -1,11 +1,9 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Post(props) {
  const [loadData,setloadData]=useState(true);
  const [postobj,setpostobj]=useState({});
- const nav=useNavigate();
- const location=useLocation();
  const [prevProps,setprevProps]=useState(props);
  
 
@@ -47,7 +45,7 @@ function Post(props) {
                 setpostobj({...obj,isLiked:true});
             }
             else{
-                setpostobj(obj);
+                setpostobj({...obj,isLiked:false});
             }
         });
     });
@@ -78,7 +76,7 @@ function Post(props) {
            <img src={postobj.mediaURL} alt="Abra ka dabra" /> : ""
         }
         {postobj.isLiked?" ❤️ ":""}
-        <div><span onClick={likePost}> 👍 </span>{postobj.likes>0?postobj.likes:0} <Link to={"/likes?postID="+postobj.postID}>likes</Link> </div>
+        <div><span onClick={likePost}>   👍   </span>{postobj.likes>0?postobj.likes:0} <Link to={"/likes?postID="+postobj.postID}>likes</Link> </div>
         {postobj.nocp>0?postobj.nocp:"0"} 
         <Link to={"/post?postID="+postobj.postID}> comments</Link>
     </div>
@@ -87,5 +85,7 @@ function Post(props) {
  
 
 }
+
+
 
 export { Post };

@@ -26,7 +26,7 @@ function Comments(){
             username: localStorage.getItem("username"),
             likes:0,
             nocp:0,
-            timestamp: Number(new Date().getMilliseconds())
+            timestamp: Number(new Date().getTime())
         };
         fetch("http://localhost:8000/newpost",{
             method: 'POST',
@@ -66,7 +66,7 @@ function Comments(){
         <button onClick={replyPost}>Reply</button>
         {childpids.map(function(pid,idx){
             return(
-                <div>
+                <div key={pid}>
                     <Post pid={pid}/>
                 </div>
             )
