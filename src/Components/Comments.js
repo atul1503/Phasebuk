@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Post } from "./Post";
 
-const { useEffect, useState } = require("react");
+const { useEffect, useState, useRef } = require("react");
 
 function Comments(){
     const [childpids,setchildpids]=useState([]);
     const [count,setcount]=useState(1); //should be used for updating when required. 
     const nav=useNavigate();
+    const inputRef=useRef(null);
     const params=new URLSearchParams(document.location.search);
     const location=useLocation();    
 
@@ -20,7 +21,7 @@ function Comments(){
 
     function replyPost(e){
         var bdy={
-            text: e.target.value,
+            text: inputRef.current.value,
             parentPostID: Number(params.get("postID")),
             username: localStorage.getItem("username"),
             likes:0,
@@ -61,7 +62,7 @@ function Comments(){
         <div>
             <button onClick={goBack}>Go back</button>
         <Post pid={params.get("postID")} count={count}/>
-        <input type="text"/>
+        <input type="text" ref={inputRef}/>
         <button onClick={replyPost}>Reply</button>
         {childpids.map(function(pid,idx){
             return(
