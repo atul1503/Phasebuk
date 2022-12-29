@@ -25,6 +25,7 @@ async function getHomeFromDB(db,id,lastpostid){
     qSnapshot.forEach(function(doc){
         friendsid.push(doc.data().friend2ID);
     });
+    friendsid.push(id);
     //console.log(friendsid);
     var postids=[];
     var postcoll=collection(db,"Posts");
