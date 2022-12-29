@@ -24,15 +24,10 @@ app.get('/likes',async function(req,res) { res.send(await getLikedUsers(db,req.q
 app.post('/signup',async function(req,res) { res.send( await createUserProfile(db,req) )})
 app.get('/users',async function(req,res) {  res.send(await getUserData(req,res)) } );
 app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
-<<<<<<< HEAD
-app.get('/home',async function(req,res) {  res.send(await getHome(req,res)) } );
-app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
-=======
 app.get('/homepostids',async function(req,res) {  res.send(await getHome(req,res)) } );
 app.get("/likeit",async function(req,res){ res.send(await likeit(db,req.query.username,req.query.postID) ) });
 app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
 app.get("/childpids",async function(req,res) { res.send(await getchildpids(db,req.query.postID)) })
->>>>>>> test
 
 
 //callback handlers
