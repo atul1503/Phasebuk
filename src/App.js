@@ -44,7 +44,6 @@ import { Post } from './Components/Post';
 
    return (
     <div>
-      
       {postIDArr.map(function(id,idx){
         return (
           <div key={id}>
