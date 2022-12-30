@@ -5,7 +5,7 @@ const { useEffect, useState, useRef } = require("react");
 
 function Comments(){
     const [childpids,setchildpids]=useState([]);
-    const [count,setcount]=useState(1); //should be used for updating when required. 
+    const [count,setcount]=useState(0); //should be used for updating when required. 
     const nav=useNavigate();
     const inputRef=useRef(null);
     const params=new URLSearchParams(document.location.search);
@@ -38,7 +38,7 @@ function Comments(){
         .then(data=>data.text())
         .then(data=>{
             if(data==="success"){
-                setcount(-count);
+                setcount(count+1);
             }
         })
     }
@@ -47,10 +47,10 @@ function Comments(){
         fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+params.get("postID"))
         .then(data=>data.json())
         .then(pobj=>{
-            if(pobj.parentPostID){
+            if(pobj.parentPostID && pobj.parentPostID>0){
                 nav("/post?postID="+pobj.parentPostID);
                 //window.location.reload();
-                setcount(-count);
+                setcount(count+1);
             }
             else{
                 nav("/");
