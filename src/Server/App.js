@@ -42,7 +42,7 @@ async function getPostsData(req,res) {
 
 async function getHome(req,res){
     //provide username as req.query
-    return await getHomeFromDB(db,req.query.username,req.query.lastpostid);
+    return await getHomeFromDB(db,req.query.username,req.query.lastpostid,req.query.firstpostid);
 }  
 
 async function verifyUser(req,res){

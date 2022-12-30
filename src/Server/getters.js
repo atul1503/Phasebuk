@@ -1,6 +1,6 @@
 const { getCountFromServer } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
-const { collection, query, where, getDocs,orderBy,limit,doc,getDoc } =firestore;
+const { collection, query, where, getDocs,orderBy,limit,doc,getDoc,startAfter } =firestore;
 
 
 async function getUserDataFromDB(db,id){
@@ -17,7 +17,7 @@ async function getPostsDataFromDB(db,id,username){
 }
 
 
-async function getHomeFromDB(db,id,lastpostid){
+async function getHomeFromDB(db,id,lastpostid,firstpostid){
     var friendcoll=collection(db,"Friendships");
     var q1=query(friendcoll,where("friend1ID","==",id));
     var qSnapshot=await getDocs(q1);
@@ -32,6 +32,10 @@ async function getHomeFromDB(db,id,lastpostid){
         if(lastpostid){
             lastpostid=Number(lastpostid);
         var q2=query(postcoll,where("username","in",friendsid),where("postID","<=",lastpostid),orderBy("postID","desc"),limit(10));
+        }
+        else if(firstpostid) {
+            firstpostid=Number(firstpostid);
+            var q2=query(postcoll,where("username","in",friendsid),where("postID",">=",firstpostid),orderBy("postID","desc"),limit(10),startAfter(firstpostid+10));
         }
         else{
             var q2=query(postcoll,where("username","in",friendsid),orderBy("postID","desc"),limit(10));
