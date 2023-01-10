@@ -55,7 +55,7 @@ import { Post } from './Components/Post';
       {postIDArr.map(function(id,idx){
         return (
           <div key={id}>
-        <Post pid={id}/>
+        <Post pid={id} postIDArr={postIDArr} setpostIDArr={setpostIDArr}/>
         </div>
         );
       })}

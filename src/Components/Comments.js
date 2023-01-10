@@ -9,7 +9,8 @@ function Comments(){
     const nav=useNavigate();
     const inputRef=useRef(null);
     const params=new URLSearchParams(document.location.search);
-    const location=useLocation();    
+    const location=useLocation();
+
 
     useEffect(function(){
         fetch("http://localhost:8000/childpids?postID="+params.get("postID"))
@@ -66,8 +67,8 @@ function Comments(){
         <button onClick={replyPost}>Reply</button>
         {childpids.map(function(pid,idx){
             return(
-                <div key={pid}>
-                    <Post pid={pid}/>
+                <div key={pid} >
+                    <Post pid={pid} childpids={childpids} setchildpids={setchildpids}/>
                 </div>
             )
         })}
