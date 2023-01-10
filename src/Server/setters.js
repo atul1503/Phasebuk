@@ -72,11 +72,31 @@ async function likeit(db,username,postid){
 
 }
 
+
+async function deletePost(db,postID){
+    var postobj=(await getDoc(doc(db,"Posts",postID))).data();
+    await deleteDoc(doc(db,"Posts",postID));
+    if(postobj.likes>0){
+        var q=query(collection(db,"LikedBy"),where("username","==",postID));
+        var qsnapshot=await getDocs(q);
+        qsnapshot.forEach(function(doc){
+            deleteDoc(doc(db,"LikedBy",doc.id));
+        })    
+    }
+    if(postobj.parentPostID<=0) return "success";
+    var docref=doc(db,"Posts",postobj.parentPostID.toString());
+    var parentpost=(await getDoc(docref)).data();
+    parentpost.nocp--;
+    await setDoc(docref,parentpost);
+    return "success";
+}
+
 module.exports={
     setPostFromDB,
     addPost,
     createUserProfile,
-    likeit
+    likeit,
+    deletePost
 
 }
 

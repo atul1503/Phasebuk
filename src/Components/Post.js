@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState,useRef } from "react";
+  
+
 
 function Post(props) {
  const [loadData,setloadData]=useState(true);
  const [postobj,setpostobj]=useState({});
  const [prevProps,setprevProps]=useState(props);
+ const [showoptions,setshowoptions]=useState(false);
  
+
 
  useEffect(function(){
     //this effect helps the post comp to load data when it requires.
@@ -32,7 +36,7 @@ function Post(props) {
 
  useEffect(function(){
     //this effect lets post comp re render with new data when parent renders.
-    if(prevProps===props  ||  !props.count) return;
+    if(prevProps===props  ||  props.count===undefined) return;
     fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
     .then(data=>data.json())
     .then(obj=>{
@@ -67,6 +71,15 @@ function Post(props) {
     <div>
         <h3>{postobj.username}</h3>
         <p>{postobj.text}</p>
+        <button onClick={()=>{
+            setshowoptions(true);
+        }}>...</button>
+        
+
+        {showoptions && props.count!==undefined?<PostOptions setshowoptions={setshowoptions} postobj={postobj} count={props.count} />:null}
+        {showoptions && props.count===undefined && props.setpostIDArr?<PostOptions setshowoptions={setshowoptions}  setpostIDArr={props.setpostIDArr} postIDArr={props.postIDArr} postobj={postobj} />:null}
+        {showoptions && props.count===undefined && !props.setpostIDArr?<PostOptions setshowoptions={setshowoptions} postobj={postobj} setchildpids={props.setchildpids} childpids={props.childpids}/>:null}
+        
         {(postobj.hasOwnProperty("mediaURL") && Array.isArray(postobj.mediaURL)) ?
                 postobj.mediaURL.map(function(url, idx) {
              return (
@@ -85,6 +98,53 @@ function Post(props) {
  
 
 }
+
+function PostOptions(props){
+    const [alert,setalert]=useState(null);
+    const nav=useNavigate();
+    
+
+    return (
+        <div style={{
+            zIndex:1,
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center",
+  minHeight: "100vh"
+        }}> 
+          <button onClick={function(){
+            if(props.postobj.username!==localStorage.getItem("username")) {setalert("You can't delete this post");return;};
+            fetch("http://localhost:8000/deletePost?postID="+props.postobj.postID,{method: "DELETE"})
+            .then(res=>res.text())
+            .then(text=>{
+                if(text==="success"){
+                    setalert("Post deleted successfully");
+                    props.setshowoptions(false);
+                    if(props.count!==undefined){
+                        nav("/home");
+                    }
+                    if(props.childpids){
+                        props.setchildpids(props.childpids.filter(function(e){
+                            return e!==props.postobj.postID;
+                        }))
+                    }
+                    else if(props.postIDArr){
+                        props.setpostIDArr(props.postIDArr.filter(function(e){
+                            return e!==props.postobj.postID;
+                        }))
+                    }
+                }
+            })
+          }}>Delete post</button>
+
+          <div>{alert?alert:null}</div>
+          <button onClick={function(){
+            props.setshowoptions(false);
+          }}>X</button>
+        </div>
+    );
+}
+
 
 
 
