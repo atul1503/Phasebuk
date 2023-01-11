@@ -68,7 +68,7 @@ function Comments(){
         {childpids.map(function(pid,idx){
             return(
                 <div key={pid} >
-                    <Post pid={pid} childpids={childpids} setchildpids={setchildpids}/>
+                    <Post pid={pid} countcopy={count} childpids={childpids} setchildpids={setchildpids} setcount={setcount}/>
                 </div>
             )
         })}
