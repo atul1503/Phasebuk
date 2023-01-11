@@ -6,7 +6,6 @@ import { useEffect, useState,useRef } from "react";
 function Post(props) {
  const [loadData,setloadData]=useState(true);
  const [postobj,setpostobj]=useState({});
- const [prevProps,setprevProps]=useState(props);
  const [showoptions,setshowoptions]=useState(false);
  
 
@@ -36,7 +35,6 @@ function Post(props) {
 
  useEffect(function(){
     //this effect lets post comp re render with new data when parent renders.
-    if(prevProps===props  ||  props.count===undefined) return;
     fetch("http://localhost:8000/post?username="+localStorage.getItem("username")+"&postID="+props.pid)
     .then(data=>data.json())
     .then(obj=>{
@@ -54,8 +52,7 @@ function Post(props) {
         });
     });
 
-    setprevProps(props);
- });
+ },[props.count]);
 
 
 
@@ -78,7 +75,7 @@ function Post(props) {
 
         {showoptions && props.count!==undefined?<PostOptions setshowoptions={setshowoptions} postobj={postobj} count={props.count} />:null}
         {showoptions && props.count===undefined && props.setpostIDArr?<PostOptions setshowoptions={setshowoptions}  setpostIDArr={props.setpostIDArr} postIDArr={props.postIDArr} postobj={postobj} />:null}
-        {showoptions && props.count===undefined && !props.setpostIDArr?<PostOptions setshowoptions={setshowoptions} postobj={postobj} setchildpids={props.setchildpids} childpids={props.childpids}/>:null}
+        {showoptions && props.count===undefined && !props.setpostIDArr?<PostOptions setshowoptions={setshowoptions} postobj={postobj} setchildpids={props.setchildpids} childpids={props.childpids} setcount={props.setcount} countcopy={props.countcopy} />:null}
         
         {(postobj.hasOwnProperty("mediaURL") && Array.isArray(postobj.mediaURL)) ?
                 postobj.mediaURL.map(function(url, idx) {
@@ -127,6 +124,7 @@ function PostOptions(props){
                         props.setchildpids(props.childpids.filter(function(e){
                             return e!==props.postobj.postID;
                         }))
+                        props.setcount(props.countcopy+1);
                     }
                     else if(props.postIDArr){
                         props.setpostIDArr(props.postIDArr.filter(function(e){

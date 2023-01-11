@@ -26,7 +26,7 @@ app.get('/users',async function(req,res) {  res.send(await getUserData(req,res))
 app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
 app.get('/homepostids',async function(req,res) {  res.send(await getHome(req,res)) } );
 app.get("/likeit",async function(req,res){ res.send(await likeit(db,req.query.username,req.query.postID) ) });
-app.post('/newpost',async function(req,res) { res.send("success");await addPost(db,req.body)});
+app.post('/newpost',async function(req,res) { await addPost(db,req.body);res.send("success");});
 app.get("/childpids",async function(req,res) { res.send(await getchildpids(db,req.query.postID)) });
 app.delete("/deletePost",async function(req,res){ var j=await deletePost(db,req.query.postID);res.send(j) });
 
