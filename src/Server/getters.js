@@ -21,9 +21,14 @@ async function getHomeFromDB(db,id,lastpostid,firstpostid){
     var friendcoll=collection(db,"Friendships");
     var q1=query(friendcoll,where("friend1ID","==",id));
     var qSnapshot=await getDocs(q1);
+    var q2=query(friendcoll,where("friend2ID","==",id));
+    var qSnapshot2=await getDocs(q2);
     var friendsid=[];
     qSnapshot.forEach(function(doc){
-        friendsid.push(doc.data().friend2ID);
+            friendsid.push(doc.data().friend2ID);
+    });
+    qSnapshot2.forEach(function(doc){
+        friendsid.push(doc.data().friend1ID);
     });
     friendsid.push(id);
     //console.log(friendsid);

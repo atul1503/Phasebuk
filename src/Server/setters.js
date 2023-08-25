@@ -84,10 +84,12 @@ async function deletePost(db,postID){
         })    
     }
     if(postobj.parentPostID<=0) return "success";
-    var docref=doc(db,"Posts",postobj.parentPostID.toString());
-    var parentpost=(await getDoc(docref)).data();
-    parentpost.nocp--;
-    await setDoc(docref,parentpost);
+    if(postobj.parentPostID!==undefined){
+        var docref=doc(db,"Posts",postobj.parentPostID.toString());
+        var parentpost=(await getDoc(docref)).data();
+        parentpost.nocp--;
+        await setDoc(docref,parentpost);
+    }
     return "success";
 }
 
