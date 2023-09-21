@@ -32,7 +32,7 @@ async function getHomeFromDB(db,id,lastpostid,firstpostid){
     });
     friendsid.push(id);
     //console.log(friendsid);
-    var postids=[];
+    var postobjs=[];
     var postcoll=collection(db,"Posts");
         if(lastpostid){
             lastpostid=Number(lastpostid);
@@ -49,12 +49,12 @@ async function getHomeFromDB(db,id,lastpostid,firstpostid){
         var qSnapshot=await getDocs(q2);
         //console.log(qSnapshot.docs);
         qSnapshot.forEach(function(doc){
-            postids.push(doc.data().postID);
+            postobjs.push(doc.data());
         })
 
         //console.log(postids);
     
-    return postids;
+    return postobjs;
 }
 
 async function isPostLiked(db,username,postID){

@@ -1,9 +1,11 @@
-import { useSelector,useDispatch } from "react-redux"
+import { useSelector,useDispatch } from "react-redux";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
 export default function Login(){
-    const state=useSelector((state)=>state);
+    const username=useSelector(state=>state.login_page.username);
+    const password=useSelector(state=>state.login_page.password);
     const dispatch=useDispatch();
     const nav=useNavigate();
 
@@ -11,7 +13,10 @@ export default function Login(){
         fetch("http://localhost:8000/login",{
             method: "POST",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: state.login_page.username,password: state.login_page.password})
+            body: JSON.stringify({
+                username,
+                password
+            })
         })
         .then(obj=>obj.json())
         .then(obj=>{
@@ -21,15 +26,17 @@ export default function Login(){
                     payload:{
                         username: obj.username
                     }
-            })
-            console.log(obj);
+            });
+            nav("/");
+            
+            
             }
         })
     }
 
     return(
         <div>
-            <label for="username">Username</label>
+            <label htmlFor="username">Username</label>
             <input name="username" onChange={
                 e=>{
                     dispatch({
@@ -38,7 +45,7 @@ export default function Login(){
                     })
                 }
             } />
-            <label for="password">Password</label>
+            <label htmlFor="password">Password</label>
             <input name="password" onChange={e=>{
                 dispatch({
                     type: "change_password",

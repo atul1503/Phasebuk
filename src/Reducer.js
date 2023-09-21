@@ -1,6 +1,12 @@
 
 const initState={
-    homeposts:[],
+    Home:{
+        homeposts:[],
+        load_prev: false,
+        load_next: false
+    },
+    comment_child_posts:[],
+    comment_post: null,    
     username:"",
     login_page:{
         username:"",
@@ -11,7 +17,13 @@ const initState={
 export const reducer=(state=initState,action)=>{
     switch(action.type){
         case "add_posts_to_home":
-            return {};
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    homeposts: action.payload.posts
+                }
+            };
         case "set_user":
             return {
                 ...state,
@@ -30,6 +42,22 @@ export const reducer=(state=initState,action)=>{
                 login_page:{
                     ...state.login_page,
                     password: action.payload
+                }
+            }
+        case "set_load_next":
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    load_next: action.payload.value
+                }
+            }
+        case "set_load_prev":
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    load_prev: action.payload.value
                 }
             }
         default:
