@@ -1,67 +1,72 @@
-
-import './App.css';
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from 'react';
-import { Post } from './Components/Post';
+import { useEffect } from "react";
+import Post from "./redux_components/Post";
+
+export default function App(){
+
+    const username=useSelector(state=>state.username);
+    const posts=useSelector(state=>state.Home.homeposts);
+    const load_prev=useSelector(state=>state.Home.load_prev);
+    const load_next=useSelector(state=>state.Home.load_next);
+    const nav=useNavigate();
+    const dispatch=useDispatch();
 
 
- function App(props) {
-  //const [posts,setPosts] = useState({postArr: [],lastpostid: null,loadData: true,wantMorePosts: false});
-  const nav=useNavigate();
-  const [loadData,setloadData]=useState(true);
-  const [postIDArr,setpostIDArr]=useState([]);
-  const [wantMorePosts,setwantMorePosts]=useState(false);
-  const [wantPrev,setWantPrev]=useState(false);
-  
+    useEffect(function() {
+        if(username===""){
+            nav("/login");
+        }
+    })
 
-  useEffect(function(){
-    if(!localStorage.getItem("username")){
-      nav('/login')
+    useEffect(function(){
+        if(load_next || load_prev || posts.length===0){
+        fetch("http://localhost:8000/homepostids?username="+username)
+        .then(obj=>obj.json())
+        .then(arr=>{
+            dispatch({
+                type: "add_posts_to_home",
+                payload:{
+                    posts: arr
+                }
+            });
+        
+        })
+       if(load_next){
+        dispatch({
+            type: "set_load_next",
+            payload: {
+                value: false
+            }
+        })
+       }
+       if(load_prev){
+        dispatch({
+            type: "set_load_prev",
+            payload: {
+                value: false
+            }
+        })
+       }
     }
-    },[]) 
-
-  useEffect(function() { getHome()});
-  
-  async function getHome(){
-    var loaddata,wantmorePosts,wantprev;
-    if(loadData){loaddata=true}
-    else if(wantMorePosts) {wantmorePosts=true}
-    else if(wantPrev) {wantprev=true}
-    else return;
-
-
-
-    if(wantmorePosts) {var responseobj=await fetch("http://localhost:8000/homepostids?username="+localStorage.getItem('username')+"&lastpostid="+postIDArr[postIDArr.length-1]) }
-    else if(wantprev) {var responseobj=await fetch("http://localhost:8000/homepostids?username="+localStorage.getItem('username')+"&firstpostid="+postIDArr[0]) }
-    else { var responseobj=await fetch("http://localhost:8000/homepostids?username="+localStorage.getItem('username')) }
-    var homepostIDs=await responseobj.json();
-    setpostIDArr(homepostIDs);
-    if(loaddata) setloadData(false);
-    if(wantmorePosts) setwantMorePosts(false);
-    if(wantprev) setWantPrev(false);
-
-  }
-
-  function getMore(e){
-    setwantMorePosts(true);
-  }
-
-  function getPrev(e){
-    setWantPrev(true);
-  }
+})
 
    return (
     <div>
-      {postIDArr.map(function(id,idx){
-        return (
-          <div key={id}>
-        <Post pid={id} postIDArr={postIDArr} setpostIDArr={setpostIDArr}/>
-        </div>
-        );
-      })}
-
+      
+      {
+      posts.postArr.map(
+        function(postobj) 
+        {  
+          return(
+           <div key={postobj.postID} >
+           <Post obj={postobj}/>
+           </div>
+          )
+        }
+      )
+}
     <button onClick={getMore}> See more </button>
-    <button onClick={getPrev}> See prev </button>
     </div>
   );
   
