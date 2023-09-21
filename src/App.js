@@ -51,16 +51,20 @@ export default function App(){
     }
 })
 
+   function getMore(){
+    console.log("Nothing done");
+   }
+
    return (
     <div>
       
       {
-      posts.postArr.map(
+      posts.map(
         function(postobj) 
         {  
           return(
            <div key={postobj.postID} >
-           <Post obj={postobj}/>
+           <Post parent="Home" postID={postobj.postID}/>
            </div>
           )
         }
@@ -74,4 +78,3 @@ export default function App(){
 
 }
 
-export default App;
