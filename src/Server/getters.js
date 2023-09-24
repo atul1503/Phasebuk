@@ -31,8 +31,6 @@ async function getHomeFromDB(db,id,lastpostid,firstpostid){
         friendsid.push(doc.data().friend1ID);
     });
     friendsid.push(id);
-    //console.log(friendsid);
-    var postobjs=[];
     var postcoll=collection(db,"Posts");
         if(lastpostid){
             lastpostid=Number(lastpostid);
@@ -46,14 +44,14 @@ async function getHomeFromDB(db,id,lastpostid,firstpostid){
             var q2=query(postcoll,where("username","in",friendsid),orderBy("postID","desc"),limit(10));
             //orderBy("timestamp","desc"),limit(10)
         }
-        var qSnapshot=await getDocs(q2);
-        //console.log(qSnapshot.docs);
-        qSnapshot.forEach(function(doc){
-            postobjs.push(doc.data());
-        })
-
-        //console.log(postids);
-    
+    var qSnapshot=await getDocs(q2);
+    var postobjs=[];
+    docs=qSnapshot.docs;
+    for (let doc of docs ){
+        post=doc.data();
+        post.isLiked=await isPostLiked(db,id,post.postID);
+        postobjs.push(post);
+    }
     return postobjs;
 }
 

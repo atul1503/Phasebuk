@@ -1,4 +1,5 @@
 
+
 const initState={
     Home:{
         homeposts:[],
@@ -58,6 +59,27 @@ export const reducer=(state=initState,action)=>{
                 Home: {
                     ...state.Home,
                     load_prev: action.payload.value
+                }
+            }
+        case "set_like":
+            return {
+                ...state,
+                Home:{
+                    ...state.Home,
+                    homeposts : state.Home.homeposts.map((e,i)=>{
+                        var ne={...e};
+                        if(ne.postID===action.payload.postID){
+                            ne.isLiked=action.payload.value
+                            if(action.payload.value){
+                                ne.likes++;
+                            }
+                            else{
+                                ne.likes--;
+                            }
+                        }
+                        return ne;
+
+                    })
                 }
             }
         default:
