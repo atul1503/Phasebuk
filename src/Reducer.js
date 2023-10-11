@@ -61,6 +61,11 @@ export const reducer=(state=initState,action)=>{
                     load_prev: action.payload.value
                 }
             }
+        case "Logout":
+            return {
+                ...state,
+                username:""
+            }
         case "set_like":
             return {
                 ...state,

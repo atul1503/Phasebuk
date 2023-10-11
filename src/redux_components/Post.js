@@ -17,29 +17,27 @@ export default function Post(props){
 
     function liker(e){
         if(post.isLiked){
-            dispatch({
-                type: "set_like",
-                payload: {
-                    postID: post.postID,
-                    value: false
-            }});
             fetch("http://localhost:8000/likeit?username="+username+"&postID="+post.postID)
             .then(ob=>ob.json())
             .then(ob=>{
-                console.log(ob);
+                dispatch({
+                    type: "set_like",
+                    payload: {
+                        postID: post.postID,
+                        value: false
+                }});
             });
         }
         else{
-            dispatch({
-                type: "set_like",
-                payload: {
-                    postID: post.postID,
-                    value: true
-            }});
             fetch("http://localhost:8000/likeit?username="+username+"&postID="+post.postID)
             .then(ob=>ob.json())
             .then(ob=>{
-                console.log(ob);
+                dispatch({
+                    type: "set_like",
+                    payload: {
+                        postID: post.postID,
+                        value: true
+                }});
             });
         }
     }

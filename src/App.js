@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Post from "./redux_components/Post";
+import Navbar from "./redux_components/Navbar";
 
 export default function App(){
 
@@ -21,6 +22,7 @@ export default function App(){
 
     useEffect(function(){
         if(load_next || load_prev || posts.length===0){
+        if( load_next===false && load_prev===false ){
         fetch("http://localhost:8000/homepostids?username="+username)
         .then(obj=>obj.json())
         .then(arr=>{
@@ -32,7 +34,20 @@ export default function App(){
             });
         
         })
+    }
        if(load_next){
+
+        fetch("http://localhost:8000/homepostids?username="+username+"&lastpostid="+posts[posts.length-1].postID)
+        .then(obj=>obj.json())
+        .then(arr=>{
+            dispatch({
+                type: "add_posts_to_home",
+                payload:{
+                    posts: arr
+                }
+            });
+        })
+
         dispatch({
             type: "set_load_next",
             payload: {
@@ -41,6 +56,17 @@ export default function App(){
         })
        }
        if(load_prev){
+        fetch("http://localhost:8000/homepostids?username="+username+"&firstpostid="+posts[0].postID)
+        .then(obj=>obj.json())
+        .then(arr=>{
+            dispatch({
+                type: "add_posts_to_home",
+                payload:{
+                    posts: arr
+                }
+            });
+        });
+
         dispatch({
             type: "set_load_prev",
             payload: {
@@ -52,11 +78,26 @@ export default function App(){
 })
 
    function getMore(){
-    console.log("Nothing done");
+    dispatch({
+        type: "set_load_next",
+        payload: {
+            value: true
+        }
+    })
+   }
+
+   function getPrevious(){
+    dispatch({
+        type: "set_load_prev",
+        payload: {
+            value: true
+        }
+    })
    }
 
    return (
     <div>
+        <Navbar/>
       
       {
       posts.map(
@@ -71,6 +112,7 @@ export default function App(){
       )
 }
     <button onClick={getMore}> See more </button>
+    <button onClick={getPrevious}> See previous </button>
     </div>
   );
   
