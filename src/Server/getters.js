@@ -1,6 +1,18 @@
 const { getCountFromServer } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,limit,doc,getDoc,startAfter } =firestore;
+const winston = require("winston");
+
+//logger init
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "logs/app.log" }),
+  ],
+});
+
 
 
 async function getUserDataFromDB(db,id){
@@ -16,6 +28,14 @@ async function getPostsDataFromDB(db,id,username){
     return postObj;
 }
 
+
+async function get_post_from_postid(db,postid){
+    var q=query(collection(db,"Posts"),where("postID","==",postid));
+    var snapshot=await getDocs(q);
+    snapshot.forEach((e)=>{
+        return e.data();
+    });
+}
 
 async function getHomeFromDB(db,id,lastpostid,firstpostid){
     var friendcoll=collection(db,"Friendships");
@@ -128,12 +148,12 @@ async function getLikedUsers(db,postID){
 
 async function getchildpids(db,parentpostid){
     var parentpostid=Number(parentpostid);
-    //console.log(parentpostid);
     var q=query(collection(db,"Posts"),where("parentPostID","==",parentpostid));
     var qSnapshot=await getDocs(q);
     var arr=[];
-    qSnapshot.forEach(function(doc){
-        arr.push(doc.data().postID);
+    qSnapshot.forEach(async function(doc){
+        var data=doc.data();
+        arr.push(data);
     });
     return({arr:arr});
 } 

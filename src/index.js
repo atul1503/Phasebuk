@@ -11,7 +11,7 @@ import Layout from './Components/Layout';
 import Login from './redux_components/Login';
 import Signup from './Components/Signup';
 import Likes from './Components/Likes';
-import Comments from './Components/Comments';
+import Comments from './redux_components/Comments';
 import Notification from './Components/Notification';
 import Logout from './Components/Logout';
 import { BrowserRouter, Routes,Route } from 'react-router-dom';

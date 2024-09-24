@@ -1,3 +1,4 @@
+import e from "cors";
 
 
 const initState={
@@ -6,8 +7,11 @@ const initState={
         load_prev: false,
         load_next: false
     },
-    comment_child_posts:[],
-    comment_post: null,    
+    Comment_page:{
+        reply_text:"",
+        child_posts: [],
+        post: {}
+    },    
     username:"",
     login_page:{
         username:"",
@@ -66,25 +70,74 @@ export const reducer=(state=initState,action)=>{
                 ...state,
                 username:""
             }
-        case "set_like":
+        case "set_reply":
             return {
                 ...state,
-                Home:{
-                    ...state.Home,
-                    homeposts : state.Home.homeposts.map((e,i)=>{
-                        var ne={...e};
-                        if(ne.postID===action.payload.postID){
-                            ne.isLiked=action.payload.value
-                            if(action.payload.value){
-                                ne.likes++;
-                            }
-                            else{
-                                ne.likes--;
-                            }
+                Comment_page:{
+                    ...state.Comment_page,
+                    reply_text: action.payload
+                }
+            }
+        case "set_comment_post":
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    post: action.payload
+                }
+            }
+        case "add_reply_post":
+            //console.log(action.payload);
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    child_posts: action.payload
+                }
+            }
+        case "clear_child_posts":
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    child_posts:[]
+                }
+            }
+        case "set_like":
+            {
+                var nstate={...state};
+                nstate.Home.homeposts=nstate.Home.homeposts.map(function(e){
+                    if(e.postID===action.payload.postID){
+                        if(e.isLiked){
+                            e.likes-=1
                         }
-                        return ne;
-
-                    })
+                        else{
+                            e.likes+=1
+                        }
+                        e.isLiked=action.payload.value;
+                    }
+                    return e;
+                });
+                nstate.Comment_page.child_posts=nstate.Comment_page.child_posts.map(function(e){
+                    if(e.postID===action.payload.postID){
+                        if(e.isLiked){
+                            e.likes-=1
+                        }
+                        else{
+                            e.likes+=1
+                        }
+                        e.isLiked=action.payload.value;
+                    }
+                    return e;
+                })
+                if(nstate.Comment_page.post.postID===action.payload.postID){
+                    if(nstate.Comment_page.post.isLiked){
+                        nstate.Comment_page.post.likes-=1
+                    }
+                    else{
+                        nstate.Comment_page.post.likes+=1
+                    }
+                    nstate.Comment_page.post.isLiked=action.payload.value;
                 }
             }
         default:

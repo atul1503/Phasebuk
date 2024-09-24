@@ -3,6 +3,7 @@ const credndb=require('./Credentials');
 const firebase_firestore=require("firebase/firestore");
 const getters=require("./getters");
 const setters=require("./setters");
+const winston = require("winston");
 const { getHomeFromDB,getPostsDataFromDB,getLikedUsers,getchildpids }=getters;
 const { createUserProfile,addPost,likeit,deletePost }=setters;
 const { collection, query, where, getDocs } =firebase_firestore;
@@ -18,6 +19,17 @@ app.use(cors());
 app.use(express.json());
 
 
+//logger init
+const logger = winston.createLogger({
+    level: "info",
+    format: winston.format.json(),
+    transports: [
+      new winston.transports.Console(),
+      new winston.transports.File({ filename: "logs/app.log" }),
+    ],
+  });
+
+
 //paths
 app.post('/login',async function(req,res){ res.send(await verifyUser(req,res) ) });
 app.get('/likes',async function(req,res) { res.send(await getLikedUsers(db,req.query.postID)) });
@@ -26,16 +38,16 @@ app.get('/users',async function(req,res) {  res.send(await getUserData(req,res))
 app.get('/post',async function(req,res) {  res.send(await getPostsData(req,res)) } );
 app.get('/homepostids',async function(req,res) {  res.send(await getHome(req,res)) } );
 app.get("/likeit",async function(req,res){ res.send(await likeit(db,req.query.username,req.query.postID) ) });
-app.post('/newpost',async function(req,res) { await addPost(db,req.body);res.send("success");});
-app.get("/childpids",async function(req,res) { res.send(await getchildpids(db,req.query.postID)) });
+app.post('/newpost',async function(req,res) { var postobj=await addPost(db,req.body);res.send(postobj);});
+app.get("/childpids",async function(req,res) {  res.send(await getchildpids(db,req.query.postID));  });
 app.delete("/deletePost",async function(req,res){ var j=await deletePost(db,req.query.postID);res.send(j) });
 
 
 //callback handlers
 async function getUserData(req,res){
     return await getters.getUserDataFromDB(db,req.query.username);
-
 }
+
 
 async function getPostsData(req,res) {
     return await getters.getPostsDataFromDB(db,req.query.postID,req.query.username);
@@ -43,6 +55,7 @@ async function getPostsData(req,res) {
 
 async function getHome(req,res){
     //provide username as req.query
+    //logger.log("info",req);
     return await getHomeFromDB(db,req.query.username,req.query.lastpostid,req.query.firstpostid);
 }  
 

@@ -40,7 +40,7 @@ async function addPost(db,postobj){
         else {obj.nocp=1}
         await setDoc(doc(db,"Posts",postobj.parentPostID.toString()),obj);
     }
-
+    return postobj;
 }
 
 async function createUserProfile(db,req){

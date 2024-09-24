@@ -1,8 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 export default function Post(props){
     const dispatch=useDispatch();
+    const nav=useNavigate();
+    const [params,setparams]=useSearchParams();
     const username=useSelector(state=>state.username);
     const post=useSelector((state)=>{
         if(props.parent==="Home"){
@@ -11,9 +14,29 @@ export default function Post(props){
                     return(state.Home.homeposts[i]);
                 }
             }
-
+        }
+        else if(props.parent==="Comments"){
+            return (state.Comment_page.post)
+        }
+        else if(props.parent==="Comments_reply"){
+            for(let i=0;i<state.Comment_page.child_posts.length;i++){
+                if(state.Comment_page.child_posts[i].postID===props.postID){
+                    return(state.Comment_page.child_posts[i])
+                }
+            }
         }
     });
+
+    function goToComments(e){
+        dispatch({
+            type:"set_comment_post",
+            payload: post
+        })
+        dispatch({
+            type: "clear_child_posts"
+        })
+        nav("/comments?postID="+post.postID);
+    }
 
     function liker(e){
         if(post.isLiked){
@@ -48,7 +71,7 @@ export default function Post(props){
         <div>
             <b><p>{post.username}</p></b>
             <p>{post.text}</p>
-            {post.isLiked?<span onClick={liker}>💖{post.likes}</span>:<span onClick={liker}>{post.likes}👍</span>} <span>{post.nocp} comments</span>
+            {post.isLiked?<span onClick={liker}>💖{post.likes}</span>:<span onClick={liker}>{post.likes}👍</span>} <span onClick={goToComments}>{post.nocp} comments</span>
 
         </div>
     )
