@@ -4,7 +4,24 @@ const { collection, query, where, getDocs,orderBy,limit,doc,getDoc,startAfter } 
 const winston = require("winston");
 const multer = require("multer");
 const upload=multer({dest: "media/"})
+const path=require('path')
 
+function sendImage(req,res){
+    //console.log(req.body);
+    const options={
+        root: path.join(__dirname,"media")
+    }
+    const filename=req.body.filename
+    //console.log(filename);
+    res.sendFile(filename,options,(err)=>{
+        if(err){
+            //console.log("file not sent because of some error")
+        }
+        else{
+            //console.log("file sent")
+        }
+    })
+}
 
 async function getUserDataFromDB(db,id){
     var usercoll=collection(db,"User");
@@ -167,5 +184,6 @@ module.exports={
     getLikedUsers,
     isPostLiked,
     getchildpids,
-    get_post_from_postid
+    get_post_from_postid,
+    sendImage
 };

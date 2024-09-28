@@ -5,7 +5,7 @@ const getters=require("./getters");
 const setters=require("./setters");
 const winston = require("winston");
 const multer=require("multer");
-const { getHomeFromDB,getLikedUsers,getchildpids,get_post_from_postid }=getters;
+const { getHomeFromDB,getLikedUsers,getchildpids,get_post_from_postid,sendImage }=getters;
 const { createUserProfile,addPost,likeit,deletePost,uploadMedia }=setters;
 const { collection, query, where, getDocs } =firebase_firestore;
 
@@ -55,6 +55,7 @@ app.post('/newpost',async function(req,res) { var postobj=await addPost(db,req.b
 app.get("/childpids",async function(req,res) {  res.send(await getchildpids(db,req.query.postID));  });
 app.post("/postimage",upload.single('file'),function(req,res){ uploadMedia(db,req,res) })
 app.delete("/deletePost",async function(req,res){ var j=await deletePost(db,req.query.postID);res.send(j) });
+app.post("/getImage",function(req,res){sendImage(req,res)})
 
 
 //callback handlers
@@ -68,8 +69,6 @@ async function getPostsData(req,res) {
 }
 
 async function getHome(req,res){
-    //provide username as req.query
-    //logger.log("info",req);
     return await getHomeFromDB(db,req.query.username,req.query.lastpostid,req.query.firstpostid);
 }  
 

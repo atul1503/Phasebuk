@@ -71,6 +71,7 @@ export default function Comments(){
         var formData=new FormData();
         formData.append('file',file);
         formData.append('username',username);
+        formData.append('parentPostID',post.postID)
         fetch("http://localhost:8000/postimage",{
             method: "POST",
             body: formData

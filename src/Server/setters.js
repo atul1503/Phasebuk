@@ -7,20 +7,16 @@ const fs=require("fs");
 
 async function uploadMedia(db,req,res){
     var file=req.file;
-    if(fs.existsSync('media/'+req.originalname)){
-        res.status(409).send({
-            message: "already there"
-        })
-    }
     var postcoll=collection(db,"Posts");
     var postobj={
         mediaPath: "media/"+file.originalname,
         likes: 0,
         nocp: 0,
         username: req.body.username,
-        parentPostID: req.parentPostID?req.parentPostID:-1
+        parentPostID: Number(req.body.parentPostID?req.body.parentPostID:-1)
     }
-    await addPost(db,postobj);
+    obj=await addPost(db,postobj);
+    //console.log(obj);
     res.send("success");
 }
 

@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -5,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 export default function Post(props){
     const dispatch=useDispatch();
     const nav=useNavigate();
+    const [url,seturl]=useState("");
     const [params,setparams]=useSearchParams();
     const username=useSelector(state=>state.username);
     const post=useSelector((state)=>{
@@ -65,11 +68,31 @@ export default function Post(props){
         }
     }
 
+    if(post.mediaPath!==undefined){
+        //console.log(post);
+        fetch("http://localhost:8000/getImage",{
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                filename: post.mediaPath.split("/").pop()
+            })
+        })
+        .then((Response)=>{
+            return Response.blob();
+        })
+        .then((response)=>{
+            const url=URL.createObjectURL(response);
+            seturl(url);
+        })
+    }
 
     if(post!==undefined){
     return(
         <div>
             <b><p>{post.username}</p></b>
+            <img src={url}/>
             <p>{post.text}</p>
             {post.isLiked?<span onClick={liker}>💖{post.likes}</span>:<span onClick={liker}>{post.likes}👍</span>} <span onClick={goToComments}>{post.nocp} comments</span>
 
