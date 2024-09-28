@@ -2,17 +2,8 @@ const { getCountFromServer } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,limit,doc,getDoc,startAfter } =firestore;
 const winston = require("winston");
-
-//logger init
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/app.log" }),
-  ],
-});
-
+const multer = require("multer");
+const upload=multer({dest: "media/"})
 
 
 async function getUserDataFromDB(db,id){
@@ -23,6 +14,8 @@ async function getUserDataFromDB(db,id){
     return userobj;
 }
 
+
+
 async function getPostsDataFromDB(db,id,username){
     var postObj=(await getDoc(doc(db,"Posts",id))).data();
     return postObj;
@@ -30,11 +23,16 @@ async function getPostsDataFromDB(db,id,username){
 
 
 async function get_post_from_postid(db,postid){
-    var q=query(collection(db,"Posts"),where("postID","==",postid));
+    //console.log("inside");
+    var q=query(collection(db,"Posts"),where("postID","==",Number(postid)));
     var snapshot=await getDocs(q);
+    //console.log(snapshot.size);
+    postobj={}
     snapshot.forEach((e)=>{
-        return e.data();
+        var data=e.data();
+        postobj={post: data}
     });
+    return postobj;
 }
 
 async function getHomeFromDB(db,id,lastpostid,firstpostid){
@@ -168,5 +166,6 @@ module.exports={
     getFriendRequestsFromDB,
     getLikedUsers,
     isPostLiked,
-    getchildpids
+    getchildpids,
+    get_post_from_postid
 };

@@ -79,6 +79,7 @@ export const reducer=(state=initState,action)=>{
                 }
             }
         case "set_comment_post":
+            //console.log("in reducer "+action.payload.nocp);
             return {
                 ...state,
                 Comment_page:{
@@ -87,12 +88,22 @@ export const reducer=(state=initState,action)=>{
                 }
             }
         case "add_reply_post":
-            //console.log(action.payload);
+            var replies=state.Comment_page.child_posts;
+            var newarr=action.payload;
+            newarr=newarr.filter((item)=>{
+                for(let i=0;i<replies.length;i++){
+                    if(replies[i].postID===item.postID){
+                        return false;
+                    }
+                }
+                return true;
+            })
+            //console.log(state.Comment_page.child_posts.concat(newarr));
             return {
                 ...state,
                 Comment_page:{
                     ...state.Comment_page,
-                    child_posts: action.payload
+                    child_posts: state.Comment_page.child_posts.concat(newarr)
                 }
             }
         case "clear_child_posts":

@@ -3,6 +3,27 @@ const { getDoc, setDoc, increment, deleteDoc } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,setDocgetDoc,doc } =firestore;
 const { isPostLiked } =require("./getters");
+const fs=require("fs");
+
+async function uploadMedia(db,req,res){
+    var file=req.file;
+    if(fs.existsSync('media/'+req.originalname)){
+        res.status(409).send({
+            message: "already there"
+        })
+    }
+    var postcoll=collection(db,"Posts");
+    var postobj={
+        mediaPath: "media/"+file.originalname,
+        likes: 0,
+        nocp: 0,
+        username: req.body.username,
+        parentPostID: req.parentPostID?req.parentPostID:-1
+    }
+    await addPost(db,postobj);
+    res.send("success");
+}
+
 
 async function setDocinTable(db,collection_name,document_obj,id){
     await setDoc(doc(db,collection_name,id),document_obj);
@@ -98,7 +119,8 @@ module.exports={
     addPost,
     createUserProfile,
     likeit,
-    deletePost
+    deletePost,
+    uploadMedia
 
 }
 
