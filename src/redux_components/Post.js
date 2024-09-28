@@ -90,9 +90,15 @@ export default function Post(props){
 
     if(post!==undefined){
     return(
-        <div>
+        <div style={{
+            border: "1px solid #333",
+            borderRadius: "10px",
+            padding: "20px",
+            background: "rgb(173,200,200)",
+            width: "50%"
+        }}>
             <b><p>{post.username}</p></b>
-            {url!==""?<img src={url}/>:null}
+            {url!==""?<img style={{objectFit: "cover",width: "100%"}} src={url}/>:null}
             <p>{post.text}</p>
             {post.isLiked?<span onClick={liker}>💖{post.likes}</span>:<span onClick={liker}>{post.likes}👍</span>} <span onClick={goToComments}>{post.nocp} comments</span>
 

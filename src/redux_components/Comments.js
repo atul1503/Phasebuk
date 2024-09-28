@@ -96,7 +96,11 @@ export default function Comments(){
 
 
     return(
-        <div>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+        }}>
             <Navbar/>
             <Post parent="Comments"/>
             <input type="text" name="reply" onChange={(e)=>dispatch({
@@ -104,7 +108,7 @@ export default function Comments(){
                 payload: e.target.value
             })}/>
             <button onClick={reply}>Reply</button>
-            <label>Upload<input type="file" onChange={(e)=>image_upload(e)}/></label> 
+            <label style={{ marginLeft: "calc(50%-width/2)" }}>Upload<input type="file"  onChange={(e)=>image_upload(e)}/></label> 
             {sortedReplies.map(function(e,index){
                 //console.log("in map"+Replies.length);
                 return(
