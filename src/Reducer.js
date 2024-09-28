@@ -1,4 +1,4 @@
-import e from "cors";
+
 
 
 const initState={
@@ -115,7 +115,6 @@ export const reducer=(state=initState,action)=>{
                 }
             }
         case "set_like":
-            {
                 var nstate={...state};
                 nstate.Home.homeposts=nstate.Home.homeposts.map(function(e){
                     if(e.postID===action.payload.postID){
@@ -150,7 +149,7 @@ export const reducer=(state=initState,action)=>{
                     }
                     nstate.Comment_page.post.isLiked=action.payload.value;
                 }
-            }
+            return nstate;
         default:
             return state
     }

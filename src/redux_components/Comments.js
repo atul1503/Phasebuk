@@ -1,11 +1,9 @@
-import { useSearchParams } from "react-router-dom";
 import Post from "./Post";
 import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect } from "react";
+import {  useEffect } from "react";
 
 export default function Comments(){
-    const [params,setParams]=useSearchParams();
     const dispatch=useDispatch();
     const username=useSelector(state=>state.username);
     const reply_text=useSelector(state=>state.Comment_page.reply_text);
@@ -27,7 +25,7 @@ export default function Comments(){
                 payload: obj.post
             })
         })
-    },[Replies.length])
+    },[Replies.length,post.postID])
 
     useEffect(function(){
 
@@ -46,7 +44,7 @@ export default function Comments(){
             clearInterval(id);
         }
 
-    },[])
+    },[post.postID])
 
 
     function reply(e){
@@ -100,7 +98,6 @@ export default function Comments(){
         <div>
             <Navbar/>
             <Post parent="Comments"/>
-            <label for="reply"/>
             <input type="text" name="reply" onChange={(e)=>dispatch({
                 type: "set_reply",
                 payload: e.target.value
