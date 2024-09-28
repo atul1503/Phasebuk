@@ -92,7 +92,7 @@ export default function Post(props){
     return(
         <div>
             <b><p>{post.username}</p></b>
-            <img src={url}/>
+            {url!==""?<img src={url}/>:null}
             <p>{post.text}</p>
             {post.isLiked?<span onClick={liker}>💖{post.likes}</span>:<span onClick={liker}>{post.likes}👍</span>} <span onClick={goToComments}>{post.nocp} comments</span>
 
