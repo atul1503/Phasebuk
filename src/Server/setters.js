@@ -3,6 +3,23 @@ const { getDoc, setDoc, increment, deleteDoc } = require("firebase/firestore");
 const firestore=require("firebase/firestore");
 const { collection, query, where, getDocs,orderBy,setDocgetDoc,doc } =firestore;
 const { isPostLiked } =require("./getters");
+const fs=require("fs");
+
+async function uploadMedia(db,req,res){
+    var file=req.file;
+    var postcoll=collection(db,"Posts");
+    var postobj={
+        mediaPath: "media/"+file.originalname,
+        likes: 0,
+        nocp: 0,
+        username: req.body.username,
+        parentPostID: Number(req.body.parentPostID?req.body.parentPostID:-1)
+    }
+    obj=await addPost(db,postobj);
+    //console.log(obj);
+    res.send("success");
+}
+
 
 async function setDocinTable(db,collection_name,document_obj,id){
     await setDoc(doc(db,collection_name,id),document_obj);
@@ -40,7 +57,7 @@ async function addPost(db,postobj){
         else {obj.nocp=1}
         await setDoc(doc(db,"Posts",postobj.parentPostID.toString()),obj);
     }
-
+    return postobj;
 }
 
 async function createUserProfile(db,req){
@@ -84,10 +101,12 @@ async function deletePost(db,postID){
         })    
     }
     if(postobj.parentPostID<=0) return "success";
-    var docref=doc(db,"Posts",postobj.parentPostID.toString());
-    var parentpost=(await getDoc(docref)).data();
-    parentpost.nocp--;
-    await setDoc(docref,parentpost);
+    if(postobj.parentPostID!==undefined){
+        var docref=doc(db,"Posts",postobj.parentPostID.toString());
+        var parentpost=(await getDoc(docref)).data();
+        parentpost.nocp--;
+        await setDoc(docref,parentpost);
+    }
     return "success";
 }
 
@@ -96,7 +115,8 @@ module.exports={
     addPost,
     createUserProfile,
     likeit,
-    deletePost
+    deletePost,
+    uploadMedia
 
 }
 

@@ -1,0 +1,152 @@
+
+
+
+const initState={
+    Home:{
+        homeposts:[],
+        load_prev: false,
+        load_next: false
+    },
+    Comment_page:{
+        reply_text:"",
+        child_posts: [],
+        post: {}
+    },    
+    username:"",
+    login_page:{
+        username:"",
+        password:""
+    }
+}
+
+export const reducer=(state=initState,action)=>{
+    switch(action.type){
+        case "add_posts_to_home":
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    homeposts: action.payload.posts
+                }
+            };
+        case "set_user":
+            return {
+                ...state,
+                username: action.payload.username
+            }
+        case "change_username":
+            return {
+                ...state,
+                login_page: {
+                    username: action.payload
+                }
+            }
+        case "change_password":
+            return {
+                ...state,
+                login_page:{
+                    ...state.login_page,
+                    password: action.payload
+                }
+            }
+        case "set_load_next":
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    load_next: action.payload.value
+                }
+            }
+        case "set_load_prev":
+            return {
+                ...state,
+                Home: {
+                    ...state.Home,
+                    load_prev: action.payload.value
+                }
+            }
+        case "Logout":
+            return {
+                ...state,
+                username:""
+            }
+        case "set_reply":
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    reply_text: action.payload
+                }
+            }
+        case "set_comment_post":
+            //console.log("in reducer "+action.payload.nocp);
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    post: action.payload
+                }
+            }
+        case "add_reply_post":
+            var replies=state.Comment_page.child_posts;
+            var newarr=action.payload;
+            newarr=newarr.filter((item)=>{
+                for(let i=0;i<replies.length;i++){
+                    if(replies[i].postID===item.postID){
+                        return false;
+                    }
+                }
+                return true;
+            })
+            //console.log(state.Comment_page.child_posts.concat(newarr));
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    child_posts: state.Comment_page.child_posts.concat(newarr)
+                }
+            }
+        case "clear_child_posts":
+            return {
+                ...state,
+                Comment_page:{
+                    ...state.Comment_page,
+                    child_posts:[]
+                }
+            }
+        case "set_like":
+                var nstate=JSON.parse(JSON.stringify(state));
+                nstate.Home.homeposts=nstate.Home.homeposts.map(function(e){
+                    if(e.postID !== action.payload.postID){
+                        return e
+                    }
+                    return {
+                        ...e,
+                        likes: e.isLiked ? e.likes - 1 : e.likes + 1,
+                        isLiked: action.payload.value
+                    };
+                });
+                nstate.Comment_page.child_posts=nstate.Comment_page.child_posts.map(function(e){
+                    if(e.postID !== action.payload.postID){
+                        return e
+                    }
+                    return {
+                        ...e,
+                        likes: e.isLiked ? e.likes - 1 : e.likes + 1,
+                        isLiked: action.payload.value
+                    };
+                })
+                if (nstate.Comment_page.post.postID === action.payload.postID) {
+                    nstate.Comment_page.post = {
+                        ...nstate.Comment_page.post,
+                        likes: nstate.Comment_page.post.isLiked 
+                            ? nstate.Comment_page.post.likes - 1 
+                            : nstate.Comment_page.post.likes + 1,
+                        isLiked: action.payload.value
+                    };
+                }
+            return nstate;
+        default:
+            return state
+    }
+}
