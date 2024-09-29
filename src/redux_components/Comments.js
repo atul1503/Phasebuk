@@ -2,9 +2,11 @@ import Post from "./Post";
 import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import {  useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Comments(){
     const dispatch=useDispatch();
+    const nav=useNavigate();
     const username=useSelector(state=>state.username);
     const reply_text=useSelector(state=>state.Comment_page.reply_text);
     const Replies=useSelector(state=>state.Comment_page.child_posts);
@@ -102,7 +104,28 @@ export default function Comments(){
             alignItems: "center"
         }}>
             <Navbar/>
-            <Post parent="Comments"/>
+            <button onClick={(e)=>{
+                if(post.parentPostID>-1){
+                    //console.log(post.parentPostID)
+                    fetch("http://localhost:8000/post?postID="+post.parentPostID)
+                    .then(response=>{
+                        return response.json()
+                    })
+                    .then(wrapper=>{
+                        //console.log(wrapper,post.parentPostID);
+                        const postobj=wrapper.post;
+                        dispatch({
+                            type: "set_comment_post",
+                            payload: postobj
+                        })
+                        dispatch({
+                            type: "clear_child_posts"
+                        })
+                        nav("/comments?postID="+postobj.postID);
+                    })
+                }
+            }}>go to parent post</button>
+            <Post parent="Comments" key={post.postID}/>
             <input type="text" name="reply" onChange={(e)=>dispatch({
                 type: "set_reply",
                 payload: e.target.value

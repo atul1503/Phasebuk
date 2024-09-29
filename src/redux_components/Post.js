@@ -68,7 +68,7 @@ export default function Post(props){
         }
     }
 
-    if(post.mediaPath!==undefined){
+    if(post.mediaPath!==undefined && url===""){
         //console.log(post);
         fetch("http://localhost:8000/getImage",{
             headers: {
