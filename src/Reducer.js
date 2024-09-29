@@ -115,39 +115,35 @@ export const reducer=(state=initState,action)=>{
                 }
             }
         case "set_like":
-                var nstate={...state};
+                var nstate=JSON.parse(JSON.stringify(state));
                 nstate.Home.homeposts=nstate.Home.homeposts.map(function(e){
-                    if(e.postID===action.payload.postID){
-                        if(e.isLiked){
-                            e.likes-=1
-                        }
-                        else{
-                            e.likes+=1
-                        }
-                        e.isLiked=action.payload.value;
+                    if(e.postID !== action.payload.postID){
+                        return e
                     }
-                    return e;
+                    return {
+                        ...e,
+                        likes: e.isLiked ? e.likes - 1 : e.likes + 1,
+                        isLiked: action.payload.value
+                    };
                 });
                 nstate.Comment_page.child_posts=nstate.Comment_page.child_posts.map(function(e){
-                    if(e.postID===action.payload.postID){
-                        if(e.isLiked){
-                            e.likes-=1
-                        }
-                        else{
-                            e.likes+=1
-                        }
-                        e.isLiked=action.payload.value;
+                    if(e.postID !== action.payload.postID){
+                        return e
                     }
-                    return e;
+                    return {
+                        ...e,
+                        likes: e.isLiked ? e.likes - 1 : e.likes + 1,
+                        isLiked: action.payload.value
+                    };
                 })
-                if(nstate.Comment_page.post.postID===action.payload.postID){
-                    if(nstate.Comment_page.post.isLiked){
-                        nstate.Comment_page.post.likes-=1
-                    }
-                    else{
-                        nstate.Comment_page.post.likes+=1
-                    }
-                    nstate.Comment_page.post.isLiked=action.payload.value;
+                if (nstate.Comment_page.post.postID === action.payload.postID) {
+                    nstate.Comment_page.post = {
+                        ...nstate.Comment_page.post,
+                        likes: nstate.Comment_page.post.isLiked 
+                            ? nstate.Comment_page.post.likes - 1 
+                            : nstate.Comment_page.post.likes + 1,
+                        isLiked: action.payload.value
+                    };
                 }
             return nstate;
         default:
