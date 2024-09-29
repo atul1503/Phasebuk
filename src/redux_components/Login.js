@@ -53,6 +53,9 @@ export default function Login(){
                 })
             }}/>
             <button onClick={verify}>Log in</button>
+            <button onClick={e=>{
+                nav("/register")
+            }}>Register</button>
         </div>
     )
 }

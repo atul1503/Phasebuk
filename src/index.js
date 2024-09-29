@@ -9,7 +9,7 @@ import Error from './Components/Error';
 import FFriends from './Components/FFriends';
 import Layout from './Components/Layout';
 import Login from './redux_components/Login';
-import Signup from './Components/Signup';
+import Register from './redux_components/register';
 import Likes from './Components/Likes';
 import Comments from './redux_components/Comments';
 import Notification from './Components/Notification';
@@ -27,7 +27,7 @@ root.render(
     <Routes>
       <Route index element={<App/>}/>
       <Route path="login" element={<Login/>}/>
-      <Route path="signup" element={<Signup/>}/>
+      <Route path="register" element={<Register/>}/>
       <Route path="comments" element={<Comments/>}/>
     </Routes>
     </BrowserRouter>
