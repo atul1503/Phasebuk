@@ -4,11 +4,20 @@ const firebase_firestore=require("firebase/firestore");
 const getters=require("./getters");
 const setters=require("./setters");
 const winston = require("winston");
+const https=require('https');
+const fs=require('fs');
 const multer=require("multer");
 const { getHomeFromDB,getLikedUsers,getchildpids,get_post_from_postid,sendImage }=getters;
 const { createUserProfile,addPost,likeit,deletePost,uploadMedia }=setters;
 const { collection, query, where, getDocs } =firebase_firestore;
 
+var key=fs.readFileSync('selfsigned.key')
+var cert=fs.readFileSync('selfsigned.crt')
+
+var options = {
+    key: key,
+    cert: cert
+  };
 
 const storage=multer.diskStorage({
     destination: function(req,file,cb){
@@ -25,8 +34,6 @@ const upload = multer({ storage: storage })
 
 const app = express();
 const db=credndb.db;
-
-const PORT=8000;
 const cors= require('cors');
 app.use(cors());
 app.use(express.json());
@@ -77,5 +84,10 @@ async function verifyUser(req,res){
     return({isValid: boole,username: req.body.username});
 }
 
+var server = https.createServer(options, app);
 
-app.listen(PORT,function() { console.log("App is running at port "+PORT) });
+const port=8000
+
+server.listen(port, () => {
+    console.log("server starting on port : " + port)
+  });

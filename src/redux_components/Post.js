@@ -43,7 +43,7 @@ export default function Post(props){
 
     function liker(e){
         if(post.isLiked){
-            fetch("http://localhost:8000/likeit?username="+username+"&postID="+post.postID)
+            fetch("https://localhost:8000/likeit?username="+username+"&postID="+post.postID)
             .then(ob=>ob.json())
             .then(ob=>{
                 dispatch({
@@ -55,7 +55,7 @@ export default function Post(props){
             });
         }
         else{
-            fetch("http://localhost:8000/likeit?username="+username+"&postID="+post.postID)
+            fetch("https://localhost:8000/likeit?username="+username+"&postID="+post.postID)
             .then(ob=>ob.json())
             .then(ob=>{
                 dispatch({
@@ -70,7 +70,7 @@ export default function Post(props){
 
     if(post.mediaPath!==undefined && url===""){
         //console.log(post);
-        fetch("http://localhost:8000/getImage",{
+        fetch("https://localhost:8000/getImage",{
             headers: {
                 'Content-Type': 'application/json'
             },

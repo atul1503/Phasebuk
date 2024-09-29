@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Post from "./redux_components/Post";
 import Navbar from "./redux_components/Navbar";
 
@@ -8,6 +8,7 @@ export default function App(){
 
     const username=useSelector(state=>state.username);
     const posts=useSelector(state=>state.Home.homeposts);
+    const [newtext,setnewtext]=useState("");
     const load_prev=useSelector(state=>state.Home.load_prev);
     const load_next=useSelector(state=>state.Home.load_next);
     const nav=useNavigate();
@@ -23,7 +24,7 @@ export default function App(){
     useEffect(function(){
         if(load_next || load_prev || posts.length===0){
         if( load_next===false && load_prev===false ){
-        fetch("http://localhost:8000/homepostids?username="+username)
+        fetch("https://localhost:8000/homepostids?username="+username)
         .then(obj=>obj.json())
         .then(arr=>{
             dispatch({
@@ -37,7 +38,7 @@ export default function App(){
     }
        if(load_next){
 
-        fetch("http://localhost:8000/homepostids?username="+username+"&lastpostid="+posts[posts.length-1].postID)
+        fetch("https://localhost:8000/homepostids?username="+username+"&lastpostid="+posts[posts.length-1].postID)
         .then(obj=>obj.json())
         .then(arr=>{
             dispatch({
@@ -56,7 +57,7 @@ export default function App(){
         })
        }
        if(load_prev){
-        fetch("http://localhost:8000/homepostids?username="+username+"&firstpostid="+posts[0].postID)
+        fetch("https://localhost:8000/homepostids?username="+username+"&firstpostid="+posts[0].postID)
         .then(obj=>obj.json())
         .then(arr=>{
             dispatch({
@@ -98,7 +99,31 @@ export default function App(){
    return (
     <div>
         <Navbar/>
-      
+
+        <input type="text" onChange={e=>setnewtext(e.target.value)}/>
+        <button onClick={e=>{
+            var newpost={
+                username: username,
+                text: newtext,
+                parentPostID: -1,
+                likes:0,
+                nocp:0,
+                timestamp: Number(new Date().getTime())
+            }
+            fetch("https://localhost:8000/newpost",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(newpost)
+        })
+        .then(response=>response.json())
+        .then(postobj=>{
+            if(postobj){
+                alert("post posted.")
+            }
+        })
+        }}>share something</button>
       {
       posts.map(
         function(postobj) 
@@ -111,6 +136,7 @@ export default function App(){
         }
       )
 }
+    
     <button onClick={getMore}> See more </button>
     <button onClick={getPrevious}> See previous </button>
     </div>

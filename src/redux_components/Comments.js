@@ -16,7 +16,7 @@ export default function Comments(){
 
     useEffect(()=>{
         //console.log("getting comment obj")
-        fetch("http://localhost:8000/post?postID="+post.postID)
+        fetch("https://localhost:8000/post?postID="+post.postID)
         .then((response)=>{
             return response.json()
         })
@@ -32,7 +32,7 @@ export default function Comments(){
     useEffect(function(){
 
         const id=setInterval(()=>{
-        fetch("http://localhost:8000/childpids?postID="+post.postID)
+        fetch("https://localhost:8000/childpids?postID="+post.postID)
         .then(data=>data.json())
         .then(obj=>{
             var arr=obj.arr;
@@ -59,7 +59,7 @@ export default function Comments(){
             nocp:0,
             timestamp: Number(new Date().getTime())
         }
-        fetch("http://localhost:8000/newpost",{
+        fetch("https://localhost:8000/newpost",{
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -74,7 +74,7 @@ export default function Comments(){
         formData.append('file',file);
         formData.append('username',username);
         formData.append('parentPostID',post.postID)
-        fetch("http://localhost:8000/postimage",{
+        fetch("https://localhost:8000/postimage",{
             method: "POST",
             body: formData
         })
@@ -107,7 +107,7 @@ export default function Comments(){
             <button onClick={(e)=>{
                 if(post.parentPostID>-1){
                     //console.log(post.parentPostID)
-                    fetch("http://localhost:8000/post?postID="+post.parentPostID)
+                    fetch("https://localhost:8000/post?postID="+post.parentPostID)
                     .then(response=>{
                         return response.json()
                     })
